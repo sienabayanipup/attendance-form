@@ -3,15 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Class Attendance</title>
+<title>PUP Weekly Attendance</title>
 <style>
   :root{
-    --ink:#1b2a2f;
-    --paper:#f6f4ee;
+    --ink:#2b1210;
+    --paper:#f7f0e2;
     --card:#ffffff;
-    --line:#d8d3c4;
-    --accent:#2f6f5e;
-    --accent-dark:#204d40;
+    --line:#e0cfa0;
+    --accent:#7a0c1e;
+    --accent-dark:#4d0712;
+    --gold:#ffc72c;
     --error:#b3402a;
   }
   *{box-sizing:border-box;}
@@ -36,16 +37,19 @@
     overflow:hidden;
   }
   .sheet-header{
-    background:var(--accent-dark);
+    background:linear-gradient(135deg, var(--accent-dark), var(--accent));
     color:#fff;
     padding:22px 28px;
+    border-bottom:4px solid var(--gold);
   }
   .sheet-header .eyebrow{
     font-size:12px;
     letter-spacing:.12em;
     text-transform:uppercase;
-    opacity:.75;
+    color:var(--gold);
+    opacity:.95;
     margin:0 0 4px;
+    font-weight:700;
   }
   .sheet-header h1{
     margin:0;
@@ -76,7 +80,7 @@
     font-family:inherit;
   }
   input:focus, select:focus{
-    outline:2px solid var(--accent);
+    outline:2px solid var(--gold);
     outline-offset:1px;
     border-color:var(--accent);
   }
@@ -113,8 +117,8 @@
 
 <div class="sheet">
   <div class="sheet-header">
-    <p class="eyebrow">Daily Record</p>
-    <h1>Class Attendance</h1>
+    <p class="eyebrow">BSOAOUMN 2-7</p>
+    <h1>Weekly Attendance</h1>
   </div>
 
   <form id="attendanceForm">
@@ -125,7 +129,7 @@
 
     <div class="field">
       <label for="studentNumber">Student number</label>
-      <input type="text" id="studentNumber" name="studentNumber" placeholder="e.g. 2023-00123" required>
+      <input type="text" id="studentNumber" name="studentNumber" placeholder="e.g. 2025-12345-MN-0" required>
     </div>
 
     <div class="field">
