@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Class Attendance</title>
+<style>
+  :root{
+    --ink:#1b2a2f;
+    --paper:#f6f4ee;
+    --card:#ffffff;
+    --line:#d8d3c4;
+    --accent:#2f6f5e;
+    --accent-dark:#204d40;
+    --error:#b3402a;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:"Segoe UI", Roboto, Arial, sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+  }
+  .sheet{
+    width:100%;
+    max-width:460px;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:10px;
+    box-shadow:0 4px 18px rgba(27,42,47,0.08);
+    overflow:hidden;
+  }
+  .sheet-header{
+    background:var(--accent-dark);
+    color:#fff;
+    padding:22px 28px;
+  }
+  .sheet-header .eyebrow{
+    font-size:12px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    opacity:.75;
+    margin:0 0 4px;
+  }
+  .sheet-header h1{
+    margin:0;
+    font-size:22px;
+    font-weight:600;
+  }
+  form{
+    padding:26px 28px 28px;
+  }
+  .field{
+    margin-bottom:18px;
+  }
+  label{
+    display:block;
+    font-size:13px;
+    font-weight:600;
+    margin-bottom:6px;
+    color:var(--ink);
+  }
+  input, select{
+    width:100%;
+    padding:11px 12px;
+    font-size:15px;
+    border:1px solid var(--line);
+    border-radius:6px;
+    background:#fdfcf9;
+    color:var(--ink);
+    font-family:inherit;
+  }
+  input:focus, select:focus{
+    outline:2px solid var(--accent);
+    outline-offset:1px;
+    border-color:var(--accent);
+  }
+  button{
+    width:100%;
+    padding:13px;
+    background:var(--accent);
+    color:#fff;
+    font-size:15px;
+    font-weight:600;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+    transition:background .15s ease;
+  }
+  button:hover{ background:var(--accent-dark); }
+  button:disabled{ opacity:.6; cursor:not-allowed; }
+  .status{
+    margin-top:14px;
+    font-size:14px;
+    text-align:center;
+    min-height:20px;
+  }
+  .status.success{ color:var(--accent-dark); font-weight:600; }
+  .status.error{ color:var(--error); font-weight:600; }
+  .hint{
+    font-size:12px;
+    color:#6b6357;
+    margin-top:-2px;
+  }
+</style>
+</head>
+<body>
+
+<div class="sheet">
+  <div class="sheet-header">
+    <p class="eyebrow">Daily Record</p>
+    <h1>Class Attendance</h1>
+  </div>
+
+  <form id="attendanceForm">
+    <div class="field">
+      <label for="fullName">Full name</label>
+      <input type="text" id="fullName" name="fullName" placeholder="Last name, First name" required>
+    </div>
+
+    <div class="field">
+      <label for="studentNumber">Student number</label>
+      <input type="text" id="studentNumber" name="studentNumber" placeholder="e.g. 2023-00123" required>
+    </div>
+
+    <div class="field">
+      <label for="attendanceDate">Date</label>
+      <input type="date" id="attendanceDate" name="attendanceDate" required>
+    </div>
+
+    <div class="field">
+      <label for="subject">Subject</label>
+      <select id="subject" name="subject" required>
+        <option value="" disabled selected>Select a subject</option>
+        <option value="ENGL 017">ENGL 017</option>
+        <option value="GEED 033">GEED 033</option>
+        <option value="OFAD 201">OFAD 201</option>
+        <option value="PATHFIT 3">PATHFIT 3</option>
+        <option value="GEED 003">GEED 003</option>
+        <option value="OFAD 203">OFAD 203</option>
+        <option value="OFAD 202">OFAD 202</option>
+      </select>
+    </div>
+
+    <button type="submit" id="submitBtn">Submit attendance</button>
+    <div class="status" id="statusMsg"></div>
+  </form>
+</div>
+
+<script>
+  // Paste the Web App URL you get from deploying the Apps Script here:
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby_yOxXOd2OoTFz21rfw47VQbIQuNloBt7CQWIK4waUdwuJJUYinzjbSjFoE7OLw-PD/exec";
+
+  // Default the date field to today
+  document.getElementById('attendanceDate').valueAsDate = new Date();
+
+  const form = document.getElementById('attendanceForm');
+  const statusMsg = document.getElementById('statusMsg');
+  const submitBtn = document.getElementById('submitBtn');
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+
+    if (SCRIPT_URL.includes("PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE")) {
+      statusMsg.textContent = "Setup needed: add your Google Apps Script Web App URL in the code (see instructions).";
+      statusMsg.className = "status error";
+      return;
+    }
+
+    const params = new URLSearchParams();
+    params.append('fullName', document.getElementById('fullName').value.trim());
+    params.append('studentNumber', document.getElementById('studentNumber').value.trim());
+    params.append('attendanceDate', document.getElementById('attendanceDate').value);
+    params.append('subject', document.getElementById('subject').value);
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Submitting...";
+    statusMsg.textContent = "";
+    statusMsg.className = "status";
+
+    // Apps Script web apps don't return readable CORS headers to fetch(),
+    // so we send with no-cors and assume success if no network error occurs.
+    fetch(SCRIPT_URL, {
+      method: "POST",
+      mode: "no-cors",
+      body: params
+    })
+    .then(() => {
+      statusMsg.textContent = "Attendance recorded. Thank you!";
+      statusMsg.className = "status success";
+      form.reset();
+      document.getElementById('attendanceDate').valueAsDate = new Date();
+    })
+    .catch(() => {
+      statusMsg.textContent = "Could not connect. Check your internet and try again.";
+      statusMsg.className = "status error";
+    })
+    .finally(() => {
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Submit attendance";
+    });
+  });
+</script>
+
+</body>
+</html>
