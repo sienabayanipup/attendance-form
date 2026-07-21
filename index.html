@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PUP Weekly Attendance</title>
+<title>PUP Weekly Synchronous Attendance</title>
 <style>
   :root{
     --ink:#2b1210;
@@ -33,7 +33,7 @@
     background:var(--card);
     border:1px solid var(--line);
     border-radius:10px;
-    box-shadow:0 4px 18px rgba(27,42,47,0.08);
+    box-shadow:0 4px 18px rgba(77,7,18,0.12);
     overflow:hidden;
   }
   .sheet-header{
@@ -118,7 +118,7 @@
 <div class="sheet">
   <div class="sheet-header">
     <p class="eyebrow">BSOAOUMN 2-7</p>
-    <h1>Weekly Attendance</h1>
+    <h1>Weekly Synchronous Attendance</h1>
   </div>
 
   <form id="attendanceForm">
@@ -157,10 +157,8 @@
 </div>
 
 <script>
-  // Paste the Web App URL you get from deploying the Apps Script here:
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby_yOxXOd2OoTFz21rfw47VQbIQuNloBt7CQWIK4waUdwuJJUYinzjbSjFoE7OLw-PD/exec";
 
-  // Default the date field to today
   document.getElementById('attendanceDate').valueAsDate = new Date();
 
   const form = document.getElementById('attendanceForm');
@@ -171,7 +169,7 @@
     e.preventDefault();
 
     if (SCRIPT_URL.includes("PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE")) {
-      statusMsg.textContent = "Setup needed: add your Google Apps Script Web App URL in the code (see instructions).";
+      statusMsg.textContent = "Setup needed: add your Google Apps Script Web App URL in the code.";
       statusMsg.className = "status error";
       return;
     }
@@ -187,8 +185,6 @@
     statusMsg.textContent = "";
     statusMsg.className = "status";
 
-    // Apps Script web apps don't return readable CORS headers to fetch(),
-    // so we send with no-cors and assume success if no network error occurs.
     fetch(SCRIPT_URL, {
       method: "POST",
       mode: "no-cors",
