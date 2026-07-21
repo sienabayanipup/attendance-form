@@ -155,6 +155,17 @@
     border-color:var(--maroon-500);
     box-shadow:0 0 0 3px rgba(255,199,44,0.35);
   }
+  input.invalid{
+    border-color:var(--error);
+  }
+  .field-error{
+    display:none;
+    font-size:11.5px;
+    color:var(--error);
+    font-weight:600;
+    margin:6px 0 0;
+  }
+  .field-error.show{ display:block; }
 
   /* ---- Subject chips ---- */
   .chip-grid{
@@ -234,6 +245,15 @@
     text-align:center;
     padding:0 26px 20px;
     margin:0;
+  }
+  .credit{
+    font-size:10.5px;
+    color:var(--ink-soft);
+    opacity:.6;
+    text-align:center;
+    padding:0 26px 16px;
+    margin:0;
+    letter-spacing:.02em;
   }
 
   /* ---- Stamp overlay ---- */
@@ -320,17 +340,20 @@
   <form id="attendanceForm">
     <div class="field">
       <label for="fullName">Full name</label>
-      <input type="text" id="fullName" name="fullName" placeholder="Last name, First name" required>
+      <input type="text" id="fullName" name="fullName" placeholder="Last Name, First Name M.I." required>
+      <p class="field-error" id="fullNameError">Please follow the format shown: Last Name, First Name M.I.</p>
     </div>
 
     <div class="field">
       <label for="studentNumber">Student number</label>
       <input type="text" id="studentNumber" name="studentNumber" placeholder="e.g. 2025-12345-MN-0" required>
+      <p class="field-error" id="studentNumberError">Please follow the format shown: 2025-12345-MN-0</p>
     </div>
 
     <div class="field">
       <label for="attendanceDate">Date</label>
       <input type="date" id="attendanceDate" name="attendanceDate" required>
+      <p class="field-error" id="attendanceDateError">Please select today's date. Past or future dates are not allowed.</p>
     </div>
 
     <div class="field">
@@ -351,6 +374,7 @@
   </form>
 
   <p class="disclaimer">This form is for the exclusive use of BSOAOUMN 2-7 and is intended for attendance monitoring purposes only.</p>
+  <p class="credit">Made by Siena Bayani</p>
 
   <div class="stamp-overlay" id="stampOverlay">
     <div class="stamp">
@@ -363,14 +387,19 @@
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby_yOxXOd2OoTFz21rfw47VQbIQuNloBt7CQWIK4waUdwuJJUYinzjbSjFoE7OLw-PD/exec";
 
-  document.getElementById('attendanceDate').valueAsDate = new Date();
-
   const form = document.getElementById('attendanceForm');
   const statusMsg = document.getElementById('statusMsg');
   const submitBtn = document.getElementById('submitBtn');
   const progressFill = document.getElementById('progressFill');
   const stampOverlay = document.getElementById('stampOverlay');
   const stampDate = document.getElementById('stampDate');
+
+  // Restrict the date picker itself to today only
+  const todayStr = new Date().toISOString().split('T')[0];
+  const attendanceDateInput = document.getElementById('attendanceDate');
+  attendanceDateInput.min = todayStr;
+  attendanceDateInput.max = todayStr;
+  attendanceDateInput.valueAsDate = new Date();
 
   const trackedFields = ['fullName','studentNumber','attendanceDate'];
   function updateProgress(){
@@ -381,12 +410,81 @@
   trackedFields.forEach(id => document.getElementById(id).addEventListener('input', updateProgress));
   document.getElementById('subjectGrid').addEventListener('change', updateProgress);
 
+  // Expected format: Last Name, First Name M.I.
+  const namePattern = /^[A-Za-zÑñ.\-']+(\s[A-Za-zÑñ.\-']+)*,\s[A-Za-zÑñ.\-']+(\s[A-Za-zÑñ.\-']+)*\s[A-Za-zÑñ]\.$/;
+  const fullNameInput = document.getElementById('fullName');
+  const fullNameError = document.getElementById('fullNameError');
+
+  function validateName(){
+    const value = fullNameInput.value.trim();
+    const valid = namePattern.test(value);
+    fullNameInput.classList.toggle('invalid', value !== '' && !valid);
+    fullNameError.classList.toggle('show', value !== '' && !valid);
+    return valid;
+  }
+  fullNameInput.addEventListener('blur', validateName);
+  fullNameInput.addEventListener('input', function(){
+    if (fullNameInput.classList.contains('invalid')) validateName();
+  });
+
+  // Expected format: 2025-12345-MN-0
+  const studentNumberPattern = /^\d{4}-\d{5}-[A-Za-z]{2}-\d$/;
+  const studentNumberInput = document.getElementById('studentNumber');
+  const studentNumberError = document.getElementById('studentNumberError');
+
+  function validateStudentNumber(){
+    const value = studentNumberInput.value.trim();
+    const valid = studentNumberPattern.test(value);
+    studentNumberInput.classList.toggle('invalid', value !== '' && !valid);
+    studentNumberError.classList.toggle('show', value !== '' && !valid);
+    return valid;
+  }
+  studentNumberInput.addEventListener('blur', validateStudentNumber);
+  studentNumberInput.addEventListener('input', function(){
+    if (studentNumberInput.classList.contains('invalid')) validateStudentNumber();
+  });
+
+  // Date must be today only
+  const attendanceDateError = document.getElementById('attendanceDateError');
+
+  function validateDate(){
+    const value = attendanceDateInput.value;
+    const valid = value === todayStr;
+    attendanceDateInput.classList.toggle('invalid', value !== '' && !valid);
+    attendanceDateError.classList.toggle('show', value !== '' && !valid);
+    return valid;
+  }
+  attendanceDateInput.addEventListener('change', validateDate);
+
   form.addEventListener('submit', function(e){
     e.preventDefault();
 
     if (SCRIPT_URL.includes("PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE")) {
       statusMsg.textContent = "Setup needed: add your Google Apps Script Web App URL in the code.";
       statusMsg.className = "status error";
+      return;
+    }
+
+    const nameOk = validateName();
+    const numberOk = validateStudentNumber();
+    const dateOk = validateDate();
+
+    if (!nameOk){
+      statusMsg.textContent = "Please correct your name format before submitting.";
+      statusMsg.className = "status error";
+      fullNameInput.focus();
+      return;
+    }
+    if (!numberOk){
+      statusMsg.textContent = "Please correct your student number format before submitting.";
+      statusMsg.className = "status error";
+      studentNumberInput.focus();
+      return;
+    }
+    if (!dateOk){
+      statusMsg.textContent = "Please select today's date before submitting.";
+      statusMsg.className = "status error";
+      attendanceDateInput.focus();
       return;
     }
 
@@ -424,7 +522,13 @@
       stampOverlay.classList.add('show');
 
       form.reset();
-      document.getElementById('attendanceDate').valueAsDate = new Date();
+      fullNameInput.classList.remove('invalid');
+      fullNameError.classList.remove('show');
+      studentNumberInput.classList.remove('invalid');
+      studentNumberError.classList.remove('show');
+      attendanceDateInput.classList.remove('invalid');
+      attendanceDateError.classList.remove('show');
+      attendanceDateInput.valueAsDate = new Date();
       updateProgress();
     })
     .catch(() => {
