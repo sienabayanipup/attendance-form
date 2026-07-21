@@ -227,6 +227,44 @@
     .kv-grid{ grid-template-columns:1fr; }
     .search-row{ flex-direction:column; }
   }
+
+  .activity-group{
+    margin-bottom:14px;
+  }
+  .activity-group:last-child{ margin-bottom:0; }
+  .activity-group-title{
+    font-size:11.5px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    color:var(--blue-900);
+    margin-bottom:6px;
+  }
+  .activity-chip-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+  }
+  .activity-chip{
+    font-size:11.5px;
+    font-weight:600;
+    padding:5px 10px;
+    border-radius:20px;
+    border:1px solid var(--line);
+    background:#fffefb;
+    color:var(--ink-soft);
+    cursor:default;
+  }
+  .activity-chip.done{
+    background:#e6f4ea;
+    border-color:#bfe3cc;
+    color:var(--good);
+  }
+  .activity-chip.not-done{
+    background:#fbeceA;
+    border-color:#f0cfcb;
+    color:var(--error);
+  }
 </style>
 </head>
 <body>
@@ -278,6 +316,42 @@
   const studentHeaderName = document.getElementById('studentHeaderName');
   const studentHeaderNumber = document.getElementById('studentHeaderNumber');
 
+  function renderGroupedActivities(body, entries){
+    // entries look like ["ENGL 017 - 07/21/2026", "Done"] — split on " - "
+    // to group everything under its subject.
+    const groups = {};
+    entries.forEach(([k, v]) => {
+      const idx = k.indexOf(' - ');
+      const subject = idx === -1 ? k : k.slice(0, idx);
+      const dateLabel = idx === -1 ? '' : k.slice(idx + 3);
+      if (!groups[subject]) groups[subject] = [];
+      groups[subject].push({ dateLabel, value: v });
+    });
+
+    Object.keys(groups).sort().forEach(subject => {
+      const groupWrap = document.createElement('div');
+      groupWrap.className = 'activity-group';
+
+      const title = document.createElement('div');
+      title.className = 'activity-group-title';
+      title.textContent = subject;
+      groupWrap.appendChild(title);
+
+      const chipRow = document.createElement('div');
+      chipRow.className = 'activity-chip-row';
+      groups[subject].forEach(({ dateLabel, value }) => {
+        const chip = document.createElement('span');
+        const doneClass = String(value).trim().toLowerCase() === 'done' ? 'done' : 'not-done';
+        chip.className = 'activity-chip ' + doneClass;
+        chip.textContent = (dateLabel || value) + (dateLabel ? '' : '');
+        chip.title = dateLabel ? (dateLabel + ': ' + value) : value;
+        chipRow.appendChild(chip);
+      });
+      groupWrap.appendChild(chipRow);
+      body.appendChild(groupWrap);
+    });
+  }
+
   function findStudentName(data){
     for (const sheetKey of Object.keys(data)){
       const record = data[sheetKey];
@@ -323,6 +397,8 @@
 
       if (!record || filteredEntries.length === 0) {
         body.innerHTML = '<p class="no-record">No record found in this sheet.</p>';
+      } else if (sheetKey === 'Base_Tracker_ACTIVITY') {
+        renderGroupedActivities(body, filteredEntries);
       } else {
         const grid = document.createElement('div');
         grid.className = 'kv-grid';
