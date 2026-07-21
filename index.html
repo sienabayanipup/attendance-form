@@ -34,7 +34,7 @@
     display:flex;
     align-items:center;
     justify-content:center;
-    padding:28px 16px;
+    padding:52px 16px 28px;
   }
 
   .sheet{
@@ -227,6 +227,15 @@
   .status.success{ color:var(--maroon-700); }
   .status.error{ color:var(--error); }
 
+  .disclaimer{
+    font-size:11.5px;
+    line-height:1.5;
+    color:var(--ink-soft);
+    text-align:center;
+    padding:0 26px 20px;
+    margin:0;
+  }
+
   /* ---- Stamp overlay ---- */
   .stamp-overlay{
     position:absolute;
@@ -291,10 +300,58 @@
     .stamp-overlay.show, .stamp-overlay.show .stamp{ animation:none; opacity:1; }
     button, .chip span{ transition:none; }
   }
+
+  /* ---- Office Administration accents ---- */
+  .sheet-wrap{
+    position:relative;
+    width:100%;
+    max-width:460px;
+  }
+  .folder-tab{
+    position:absolute;
+    top:-22px;
+    left:28px;
+    width:150px;
+    height:30px;
+    background:linear-gradient(160deg, #e8c983, #d9b366);
+    border:1px solid #b8934a;
+    border-bottom:none;
+    clip-path:polygon(8% 100%, 0% 0%, 100% 0%, 92% 100%);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:1;
+    box-shadow:0 -2px 6px rgba(77,7,18,0.08);
+  }
+  .folder-tab span{
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--maroon-900);
+  }
+  .paperclip{
+    position:absolute;
+    top:-14px;
+    right:22px;
+    width:34px;
+    height:58px;
+    z-index:2;
+    transform:rotate(-6deg);
+    filter:drop-shadow(0 3px 4px rgba(0,0,0,0.25));
+  }
 </style>
 </head>
 <body>
 
+<div class="sheet-wrap">
+  <div class="folder-tab"><span>OFAD &middot; 2-7</span></div>
+  <svg class="paperclip" viewBox="0 0 34 58" xmlns="http://www.w3.org/2000/svg">
+    <path d="M9 8 C9 3.5 12.8 0 17 0 C21.2 0 25 3.5 25 8 L25 42 C25 47.5 20.7 52 15 52 C9.3 52 5 47.5 5 42 L5 14 C5 11.2 7.2 9 10 9 C12.8 9 15 11.2 15 14 L15 40"
+      fill="none" stroke="#9aa3ab" stroke-width="3.4" stroke-linecap="round"/>
+    <path d="M9 8 C9 3.5 12.8 0 17 0 C21.2 0 25 3.5 25 8 L25 42 C25 47.5 20.7 52 15 52 C9.3 52 5 47.5 5 42 L5 14 C5 11.2 7.2 9 10 9 C12.8 9 15 11.2 15 14 L15 40"
+      fill="none" stroke="#c7ccd1" stroke-width="1.4" stroke-linecap="round" transform="translate(-0.6,-0.6)"/>
+  </svg>
 <div class="sheet" id="sheetCard">
   <p class="ribbon">Official Attendance Record</p>
 
@@ -341,12 +398,15 @@
     <div class="status" id="statusMsg"></div>
   </form>
 
+  <p class="disclaimer">This form is intended solely for section BSOAOUMN 2-7 attendance monitoring.</p>
+
   <div class="stamp-overlay" id="stampOverlay">
     <div class="stamp">
       <span class="word">RECORDED</span>
       <span class="date" id="stampDate"></span>
     </div>
   </div>
+</div>
 </div>
 
 <script>
