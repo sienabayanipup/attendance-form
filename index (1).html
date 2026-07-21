@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BSOAOUMN 2-7 Tools</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --maroon-900:#4d0712;
+    --maroon-700:#7a0c1e;
+    --blue-900:#0b2b4d;
+    --blue-700:#134e8f;
+    --paper:#faf6ea;
+    --card:#fffdf7;
+    --line:#e3d3a0;
+    --ink:#2b1210;
+    --ink-soft:#6b5347;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Inter', Arial, sans-serif;
+    background:
+      radial-gradient(circle at 15% 10%, rgba(122,12,30,0.05), transparent 40%),
+      radial-gradient(circle at 90% 85%, rgba(19,78,143,0.08), transparent 45%),
+      var(--paper);
+    color:var(--ink);
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:32px 16px;
+  }
+  .wrap{
+    width:100%;
+    max-width:640px;
+    text-align:center;
+  }
+  .eyebrow{
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    margin:0 0 6px;
+  }
+  h1{
+    font-family:'Playfair Display', serif;
+    font-weight:700;
+    font-size:28px;
+    margin:0 0 8px;
+    color:var(--ink);
+  }
+  .sub{
+    font-size:14px;
+    color:var(--ink-soft);
+    margin:0 0 32px;
+  }
+  .cards{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px;
+  }
+  a.card{
+    display:block;
+    text-decoration:none;
+    border-radius:12px;
+    padding:26px 20px;
+    color:#fff;
+    box-shadow:0 10px 26px rgba(0,0,0,0.14);
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  a.card:hover{
+    transform:translateY(-3px);
+    box-shadow:0 14px 32px rgba(0,0,0,0.18);
+  }
+  .card.attendance{ background:linear-gradient(160deg, var(--maroon-700), var(--maroon-900)); }
+  .card.lookup{ background:linear-gradient(160deg, var(--blue-700), var(--blue-900)); }
+  .card .icon{
+    font-size:30px;
+    margin-bottom:10px;
+  }
+  .card .title{
+    font-family:'Plus Jakarta Sans', sans-serif;
+    font-weight:700;
+    font-size:17px;
+    margin-bottom:6px;
+  }
+  .card .desc{
+    font-size:12.5px;
+    opacity:.85;
+    line-height:1.4;
+  }
+
+  @media (max-width:480px){
+    .cards{ grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <p class="eyebrow">PUP OUS &middot; BSOAOUMN 2-7</p>
+  <h1>Class Tools</h1>
+  <p class="sub">Choose a tool below.</p>
+
+  <div class="cards">
+    <a class="card attendance" href="attendance.html">
+      <div class="icon">&#128220;</div>
+      <div class="title">Weekly Attendance</div>
+      <div class="desc">Submit your name, student number, date, and subject for the week.</div>
+    </a>
+    <a class="card lookup" href="lookup.html">
+      <div class="icon">&#128269;</div>
+      <div class="title">Student Lookup</div>
+      <div class="desc">Search a student number to view grades, enrollment, and attendance records.</div>
+    </a>
+  </div>
+</div>
+
+</body>
+</html>
