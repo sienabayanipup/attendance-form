@@ -4,122 +4,309 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PUP Weekly Synchronous Attendance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
   :root{
+    --maroon-900:#4d0712;
+    --maroon-700:#7a0c1e;
+    --maroon-500:#a3182f;
+    --gold-500:#ffc72c;
+    --gold-100:#fff2cc;
+    --paper:#faf6ea;
+    --card:#fffdf7;
+    --line:#e3d3a0;
     --ink:#2b1210;
-    --paper:#f7f0e2;
-    --card:#ffffff;
-    --line:#e0cfa0;
-    --accent:#7a0c1e;
-    --accent-dark:#4d0712;
-    --gold:#ffc72c;
+    --ink-soft:#6b5347;
     --error:#b3402a;
   }
   *{box-sizing:border-box;}
   body{
     margin:0;
-    font-family:"Segoe UI", Roboto, Arial, sans-serif;
-    background:var(--paper);
+    font-family:'Inter', Arial, sans-serif;
+    background:
+      radial-gradient(circle at 15% 10%, rgba(122,12,30,0.06), transparent 40%),
+      radial-gradient(circle at 90% 85%, rgba(255,199,44,0.10), transparent 45%),
+      var(--paper);
     color:var(--ink);
     min-height:100vh;
     display:flex;
     align-items:center;
     justify-content:center;
-    padding:24px;
+    padding:28px 16px;
   }
+
   .sheet{
+    position:relative;
     width:100%;
     max-width:460px;
     background:var(--card);
     border:1px solid var(--line);
-    border-radius:10px;
-    box-shadow:0 4px 18px rgba(77,7,18,0.12);
+    border-radius:12px;
+    box-shadow:0 12px 34px rgba(77,7,18,0.16);
     overflow:hidden;
   }
-  .sheet-header{
-    background:linear-gradient(135deg, var(--accent-dark), var(--accent));
-    color:#fff;
-    padding:22px 28px;
-    border-bottom:4px solid var(--gold);
-  }
-  .sheet-header .eyebrow{
-    font-size:12px;
-    letter-spacing:.12em;
-    text-transform:uppercase;
-    color:var(--gold);
-    opacity:.95;
-    margin:0 0 4px;
+
+  /* ---- Letterhead ---- */
+  .ribbon{
+    background:var(--gold-500);
+    color:var(--maroon-900);
+    text-align:center;
+    font-size:10.5px;
     font-weight:700;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    padding:5px 0;
   }
-  .sheet-header h1{
+  .letterhead{
+    background:linear-gradient(160deg, var(--maroon-700) 0%, var(--maroon-900) 100%);
+    color:#fff;
+    padding:22px 26px 20px;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    position:relative;
+  }
+  .seal{
+    flex:0 0 auto;
+    width:52px;
+    height:52px;
+    border-radius:50%;
+    border:2px solid var(--gold-500);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:'Playfair Display', serif;
+    font-weight:700;
+    font-size:15px;
+    letter-spacing:.02em;
+    background:radial-gradient(circle, rgba(255,199,44,0.14), transparent 70%);
+  }
+  .letterhead-text .eyebrow{
+    margin:0 0 3px;
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--gold-500);
+  }
+  .letterhead-text h1{
     margin:0;
-    font-size:22px;
-    font-weight:600;
+    font-family:'Playfair Display', serif;
+    font-weight:700;
+    font-size:20px;
+    line-height:1.2;
   }
+
+  /* ---- Progress ---- */
+  .progress-track{
+    height:4px;
+    background:var(--gold-100);
+  }
+  .progress-fill{
+    height:100%;
+    width:0%;
+    background:var(--gold-500);
+    transition:width .35s ease;
+  }
+
+  /* ---- Ledger body ---- */
   form{
-    padding:26px 28px 28px;
+    position:relative;
+    padding:26px 26px 28px;
+    background-image:repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 38px,
+      var(--line) 38px,
+      var(--line) 39px
+    );
+    background-position: 0 96px;
   }
-  .field{
-    margin-bottom:18px;
-  }
+
+  .field{ margin-bottom:20px; }
   label{
     display:block;
-    font-size:13px;
-    font-weight:600;
-    margin-bottom:6px;
-    color:var(--ink);
+    font-size:12.5px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    margin-bottom:7px;
+    color:var(--maroon-700);
   }
-  input, select{
+  input{
     width:100%;
     padding:11px 12px;
     font-size:15px;
-    border:1px solid var(--line);
-    border-radius:6px;
-    background:#fdfcf9;
+    font-family:'Inter', sans-serif;
+    border:1.5px solid var(--line);
+    border-radius:7px;
+    background:#fffefb;
     color:var(--ink);
-    font-family:inherit;
+    transition:border-color .15s ease, box-shadow .15s ease;
   }
-  input:focus, select:focus{
-    outline:2px solid var(--gold);
+  #studentNumber{
+    font-family:'IBM Plex Mono', monospace;
+    letter-spacing:.02em;
+  }
+  input:focus{
+    outline:none;
+    border-color:var(--maroon-500);
+    box-shadow:0 0 0 3px rgba(255,199,44,0.35);
+  }
+
+  /* ---- Subject chips ---- */
+  .chip-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+  }
+  .chip{ position:relative; }
+  .chip input{
+    position:absolute;
+    opacity:0;
+    width:100%;
+    height:100%;
+    margin:0;
+    cursor:pointer;
+  }
+  .chip span{
+    display:block;
+    text-align:center;
+    padding:10px 6px;
+    border:1.5px solid var(--line);
+    border-radius:8px;
+    font-size:13px;
+    font-weight:600;
+    color:var(--ink-soft);
+    background:#fffefb;
+    transition:all .15s ease;
+    user-select:none;
+  }
+  .chip input:checked + span{
+    background:var(--maroon-700);
+    border-color:var(--maroon-700);
+    color:#fff;
+    box-shadow:0 3px 10px rgba(122,12,30,0.28);
+  }
+  .chip input:focus-visible + span{
+    outline:2px solid var(--gold-500);
     outline-offset:1px;
-    border-color:var(--accent);
   }
+  .chip:hover span{ border-color:var(--maroon-500); }
+
+  /* ---- Submit ---- */
   button{
     width:100%;
-    padding:13px;
-    background:var(--accent);
+    margin-top:6px;
+    padding:14px;
+    background:var(--maroon-700);
+    background-image:linear-gradient(160deg, var(--maroon-500), var(--maroon-900));
     color:#fff;
     font-size:15px;
-    font-weight:600;
+    font-weight:700;
+    letter-spacing:.02em;
     border:none;
-    border-radius:6px;
+    border-radius:8px;
     cursor:pointer;
-    transition:background .15s ease;
+    transition:transform .12s ease, box-shadow .12s ease;
+    box-shadow:0 6px 16px rgba(77,7,18,0.3);
   }
-  button:hover{ background:var(--accent-dark); }
-  button:disabled{ opacity:.6; cursor:not-allowed; }
+  button:hover:not(:disabled){ transform:translateY(-1px); box-shadow:0 8px 20px rgba(77,7,18,0.36); }
+  button:active:not(:disabled){ transform:translateY(0); }
+  button:disabled{ opacity:.6; cursor:not-allowed; transform:none; }
+
   .status{
     margin-top:14px;
-    font-size:14px;
+    font-size:13.5px;
     text-align:center;
-    min-height:20px;
+    min-height:18px;
+    font-weight:600;
   }
-  .status.success{ color:var(--accent-dark); font-weight:600; }
-  .status.error{ color:var(--error); font-weight:600; }
-  .hint{
-    font-size:12px;
-    color:#6b6357;
-    margin-top:-2px;
+  .status.success{ color:var(--maroon-700); }
+  .status.error{ color:var(--error); }
+
+  /* ---- Stamp overlay ---- */
+  .stamp-overlay{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(250,246,234,0.55);
+    opacity:0;
+    pointer-events:none;
+    z-index:5;
+  }
+  .stamp-overlay.show{
+    opacity:1;
+    animation:overlayFade 1.8s ease forwards;
+  }
+  .stamp{
+    width:150px;
+    height:150px;
+    border-radius:50%;
+    border:4px solid var(--maroon-700);
+    color:var(--maroon-700);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    transform:scale(2.4) rotate(-24deg);
+    opacity:0;
+    font-family:'Playfair Display', serif;
+    background:rgba(122,12,30,0.03);
+  }
+  .stamp-overlay.show .stamp{
+    animation:stampThump .5s cubic-bezier(.2,1.6,.4,1) .05s forwards;
+  }
+  .stamp .word{
+    font-size:19px;
+    font-weight:700;
+    letter-spacing:.06em;
+  }
+  .stamp .date{
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:.08em;
+    margin-top:4px;
+    font-family:'Inter', sans-serif;
+  }
+
+  @keyframes stampThump{
+    0%{ transform:scale(2.4) rotate(-24deg); opacity:0; }
+    60%{ transform:scale(0.92) rotate(-12deg); opacity:1; }
+    80%{ transform:scale(1.05) rotate(-12deg); }
+    100%{ transform:scale(1) rotate(-12deg); opacity:1; }
+  }
+  @keyframes overlayFade{
+    0%{ opacity:0; }
+    15%{ opacity:1; }
+    75%{ opacity:1; }
+    100%{ opacity:0; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .stamp-overlay.show, .stamp-overlay.show .stamp{ animation:none; opacity:1; }
+    button, .chip span{ transition:none; }
   }
 </style>
 </head>
 <body>
 
-<div class="sheet">
-  <div class="sheet-header">
-    <p class="eyebrow">BSOAOUMN 2-7</p>
-    <h1>Weekly Synchronous Attendance</h1>
+<div class="sheet" id="sheetCard">
+  <p class="ribbon">Official Attendance Record</p>
+
+  <div class="letterhead">
+    <div class="seal">PUP</div>
+    <div class="letterhead-text">
+      <p class="eyebrow">BSOAOUMN 2-7</p>
+      <h1>Weekly Synchronous Attendance</h1>
+    </div>
   </div>
+
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
 
   <form id="attendanceForm">
     <div class="field">
@@ -138,22 +325,28 @@
     </div>
 
     <div class="field">
-      <label for="subject">Subject</label>
-      <select id="subject" name="subject" required>
-        <option value="" disabled selected>Select a subject</option>
-        <option value="ENGL 017">ENGL 017</option>
-        <option value="GEED 033">GEED 033</option>
-        <option value="OFAD 201">OFAD 201</option>
-        <option value="PATHFIT 3">PATHFIT 3</option>
-        <option value="GEED 003">GEED 003</option>
-        <option value="OFAD 203">OFAD 203</option>
-        <option value="OFAD 202">OFAD 202</option>
-      </select>
+      <label>Subject</label>
+      <div class="chip-grid" id="subjectGrid">
+        <label class="chip"><input type="radio" name="subject" value="ENGL 017" required><span>ENGL 017</span></label>
+        <label class="chip"><input type="radio" name="subject" value="GEED 033"><span>GEED 033</span></label>
+        <label class="chip"><input type="radio" name="subject" value="OFAD 201"><span>OFAD 201</span></label>
+        <label class="chip"><input type="radio" name="subject" value="PATHFIT 3"><span>PATHFIT 3</span></label>
+        <label class="chip"><input type="radio" name="subject" value="GEED 003"><span>GEED 003</span></label>
+        <label class="chip"><input type="radio" name="subject" value="OFAD 203"><span>OFAD 203</span></label>
+        <label class="chip"><input type="radio" name="subject" value="OFAD 202"><span>OFAD 202</span></label>
+      </div>
     </div>
 
-    <button type="submit" id="submitBtn">Submit attendance</button>
+    <button type="submit" id="submitBtn">Record attendance</button>
     <div class="status" id="statusMsg"></div>
   </form>
+
+  <div class="stamp-overlay" id="stampOverlay">
+    <div class="stamp">
+      <span class="word">RECORDED</span>
+      <span class="date" id="stampDate"></span>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -164,6 +357,18 @@
   const form = document.getElementById('attendanceForm');
   const statusMsg = document.getElementById('statusMsg');
   const submitBtn = document.getElementById('submitBtn');
+  const progressFill = document.getElementById('progressFill');
+  const stampOverlay = document.getElementById('stampOverlay');
+  const stampDate = document.getElementById('stampDate');
+
+  const trackedFields = ['fullName','studentNumber','attendanceDate'];
+  function updateProgress(){
+    let filled = trackedFields.filter(id => document.getElementById(id).value.trim() !== '').length;
+    if (document.querySelector('input[name="subject"]:checked')) filled++;
+    progressFill.style.width = (filled / (trackedFields.length + 1) * 100) + '%';
+  }
+  trackedFields.forEach(id => document.getElementById(id).addEventListener('input', updateProgress));
+  document.getElementById('subjectGrid').addEventListener('change', updateProgress);
 
   form.addEventListener('submit', function(e){
     e.preventDefault();
@@ -174,14 +379,21 @@
       return;
     }
 
+    const subjectInput = document.querySelector('input[name="subject"]:checked');
+    if (!subjectInput){
+      statusMsg.textContent = "Please choose a subject.";
+      statusMsg.className = "status error";
+      return;
+    }
+
     const params = new URLSearchParams();
     params.append('fullName', document.getElementById('fullName').value.trim());
     params.append('studentNumber', document.getElementById('studentNumber').value.trim());
     params.append('attendanceDate', document.getElementById('attendanceDate').value);
-    params.append('subject', document.getElementById('subject').value);
+    params.append('subject', subjectInput.value);
 
     submitBtn.disabled = true;
-    submitBtn.textContent = "Submitting...";
+    submitBtn.textContent = "Recording...";
     statusMsg.textContent = "";
     statusMsg.className = "status";
 
@@ -193,8 +405,16 @@
     .then(() => {
       statusMsg.textContent = "Attendance recorded. Thank you!";
       statusMsg.className = "status success";
+
+      const now = new Date();
+      stampDate.textContent = now.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+      stampOverlay.classList.remove('show');
+      void stampOverlay.offsetWidth;
+      stampOverlay.classList.add('show');
+
       form.reset();
       document.getElementById('attendanceDate').valueAsDate = new Date();
+      updateProgress();
     })
     .catch(() => {
       statusMsg.textContent = "Could not connect. Check your internet and try again.";
@@ -202,9 +422,11 @@
     })
     .finally(() => {
       submitBtn.disabled = false;
-      submitBtn.textContent = "Submit attendance";
+      submitBtn.textContent = "Record attendance";
     });
   });
+
+  updateProgress();
 </script>
 
 </body>
