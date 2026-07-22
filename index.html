@@ -13,32 +13,80 @@
     --maroon-700:#7a0c1e;
     --blue-900:#0b2b4d;
     --blue-700:#134e8f;
-    --paper:#faf6ea;
+    --paper-1:#f7f3ec;
+    --paper-2:#fffdf8;
     --card:#fffdf7;
     --line:#e3d3a0;
     --ink:#2b1210;
     --ink-soft:#6b5347;
   }
   *{box-sizing:border-box;}
+  html, body{ height:100%; }
   body{
     margin:0;
     font-family:'Inter', Arial, sans-serif;
     background:
-      radial-gradient(circle at 15% 10%, rgba(122,12,30,0.05), transparent 40%),
-      radial-gradient(circle at 90% 85%, rgba(19,78,143,0.08), transparent 45%),
-      var(--paper);
+      radial-gradient(circle at 12% 8%, rgba(122,12,30,0.05), transparent 38%),
+      radial-gradient(circle at 92% 88%, rgba(19,78,143,0.07), transparent 42%),
+      linear-gradient(160deg, var(--paper-1) 0%, var(--paper-2) 100%);
     color:var(--ink);
     min-height:100vh;
     display:flex;
+    flex-direction:column;
     align-items:center;
     justify-content:center;
-    padding:32px 16px;
+    padding:40px 16px;
+    position:relative;
+    overflow-x:hidden;
   }
+
+  /* faint geometric shapes */
+  body::before, body::after{
+    content:"";
+    position:absolute;
+    border-radius:50%;
+    opacity:0.05;
+    pointer-events:none;
+  }
+  body::before{
+    width:420px; height:420px;
+    top:-120px; left:-140px;
+    background:var(--maroon-700);
+  }
+  body::after{
+    width:360px; height:360px;
+    bottom:-100px; right:-120px;
+    background:var(--blue-700);
+  }
+
   .wrap{
     width:100%;
-    max-width:640px;
+    max-width:680px;
     text-align:center;
+    position:relative;
+    z-index:1;
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
   }
+
+  .seal{
+    width:56px;
+    height:56px;
+    margin:0 auto 16px;
+    border-radius:50%;
+    border:2px solid var(--maroon-700);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:'Playfair Display', serif;
+    font-weight:700;
+    font-size:16px;
+    color:var(--maroon-700);
+    background:radial-gradient(circle, rgba(122,12,30,0.06), transparent 70%);
+  }
+
   .eyebrow{
     font-size:12px;
     font-weight:700;
@@ -50,49 +98,82 @@
   h1{
     font-family:'Playfair Display', serif;
     font-weight:700;
-    font-size:28px;
+    font-size:30px;
     margin:0 0 8px;
     color:var(--ink);
   }
-  .sub{
-    font-size:14px;
+  .welcome-sub{
+    font-size:14.5px;
     color:var(--ink-soft);
-    margin:0 0 32px;
+    margin:0 0 30px;
+    line-height:1.5;
   }
+  .prompt{
+    font-family:'Plus Jakarta Sans', sans-serif;
+    font-size:15px;
+    font-weight:600;
+    color:var(--ink);
+    margin:0 0 20px;
+  }
+
   .cards{
     display:grid;
     grid-template-columns:1fr 1fr;
-    gap:18px;
+    gap:20px;
   }
   a.card{
     display:block;
     text-decoration:none;
-    border-radius:12px;
-    padding:26px 20px;
+    border-radius:14px;
+    padding:30px 22px;
     color:#fff;
     box-shadow:0 10px 26px rgba(0,0,0,0.14);
-    transition:transform .15s ease, box-shadow .15s ease;
+    transition:transform .2s ease, box-shadow .2s ease;
+    cursor:pointer;
   }
   a.card:hover{
-    transform:translateY(-3px);
-    box-shadow:0 14px 32px rgba(0,0,0,0.18);
+    transform:translateY(-4px) scale(1.03);
+    box-shadow:0 18px 38px rgba(0,0,0,0.22);
+  }
+  a.card:active{
+    transform:translateY(-1px) scale(1.01);
   }
   .card.attendance{ background:linear-gradient(160deg, var(--maroon-700), var(--maroon-900)); }
   .card.lookup{ background:linear-gradient(160deg, var(--blue-700), var(--blue-900)); }
   .card .icon{
-    font-size:30px;
-    margin-bottom:10px;
+    font-size:40px;
+    margin-bottom:14px;
+    line-height:1;
   }
   .card .title{
     font-family:'Plus Jakarta Sans', sans-serif;
     font-weight:700;
-    font-size:17px;
-    margin-bottom:6px;
+    font-size:18px;
+    margin-bottom:8px;
   }
   .card .desc{
-    font-size:12.5px;
+    font-size:14.5px;
+    line-height:1.5;
+    opacity:.92;
+  }
+
+  .footer{
+    margin-top:36px;
+    font-size:11.5px;
+    color:var(--ink-soft);
+    line-height:1.6;
     opacity:.85;
-    line-height:1.4;
+    text-align:center;
+  }
+  .footer .line1{ font-weight:600; letter-spacing:.03em; }
+
+  .disclaimer{
+    font-size:12px;
+    line-height:1.5;
+    color:var(--ink-soft);
+    text-align:center;
+    max-width:480px;
+    margin:28px auto 0;
   }
 
   @media (max-width:480px){
@@ -103,9 +184,10 @@
 <body>
 
 <div class="wrap">
-  <p class="eyebrow">PUP OUS &middot; BSOAOUMN 2-7</p>
-  <h1>Class Tools</h1>
-  <p class="sub">Choose a tool below.</p>
+  <div class="seal">PUP</div>
+  <h1>Welcome, BSOAOUMN 2-7!</h1>
+  <p class="welcome-sub">Use the tools below for attendance and student records.</p>
+  <p class="prompt">What would you like to do today?</p>
 
   <div class="cards">
     <a class="card attendance" href="attendance.html">
@@ -119,6 +201,14 @@
       <div class="desc">Search a student number to view grades, enrollment, and attendance records.</div>
     </a>
   </div>
+</div>
+
+<p class="disclaimer">This site is for the exclusive use of BSOAOUMN 2-7 and is intended for academic monitoring purposes only.</p>
+
+<div class="footer">
+  <div class="line1">PUP OUS &bull; BSOAOUMN 2-7</div>
+  <div>Developed by Siena Bayani</div>
+  <div>Version 1.0</div>
 </div>
 
 </body>
