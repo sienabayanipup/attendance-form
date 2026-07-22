@@ -118,7 +118,7 @@
 
   .cards{
     display:grid;
-    grid-template-columns:1fr 1fr;
+    grid-template-columns:1fr 1fr 1fr;
     gap:20px;
   }
   a.card{
@@ -143,6 +143,8 @@
   .card.attendance:hover{ box-shadow:0 18px 35px rgba(122,12,30,0.32); }
   .card.lookup{ background:linear-gradient(160deg, var(--blue-700), var(--blue-900)); }
   .card.lookup:hover{ box-shadow:0 18px 35px rgba(19,78,143,0.32); }
+  .card.mark{ background:linear-gradient(160deg, #2f7d5e, #1a4d38); }
+  .card.mark:hover{ box-shadow:0 18px 35px rgba(26,77,56,0.32); }
   .card .icon{
     font-size:40px;
     margin-bottom:14px;
@@ -207,6 +209,11 @@
       <div class="icon">&#128269;</div>
       <div class="title">Student Lookup</div>
       <div class="desc">Search a student number to view grades, enrollment, and attendance records.</div>
+    </a>
+    <a class="card mark" href="mark_activity.html">
+      <div class="icon">&#9989;</div>
+      <div class="title">Mark My Activity</div>
+      <div class="desc">Confirm that you've completed an activity for a subject.</div>
     </a>
   </div>
 </div>
