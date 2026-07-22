@@ -488,16 +488,51 @@
       return;
     }
 
-    const params = new URLSearchParams();
-    params.append('fullName', document.getElementById('fullName').value.trim());
-    params.append('studentNumber', document.getElementById('studentNumber').value.trim());
-    params.append('attendanceDate', document.getElementById('attendanceDate').value);
-    params.append('subject', subjectInput.value);
+    const fullNameVal = document.getElementById('fullName').value.trim();
+    const studentNumberVal = document.getElementById('studentNumber').value.trim();
+    const dateVal = document.getElementById('attendanceDate').value;
+    const subjectVal = subjectInput.value;
 
     submitBtn.disabled = true;
-    submitBtn.textContent = "Recording...";
+    submitBtn.textContent = "Checking...";
     statusMsg.textContent = "";
     statusMsg.className = "status";
+
+    // Check for a duplicate first — GET responses are readable, unlike the
+    // POST response below, which Apps Script serves without CORS headers.
+    const checkUrl = SCRIPT_URL
+      + "?action=checkDuplicate"
+      + "&studentNumber=" + encodeURIComponent(studentNumberVal)
+      + "&subject=" + encodeURIComponent(subjectVal)
+      + "&date=" + encodeURIComponent(dateVal);
+
+    fetch(checkUrl)
+      .then(res => res.json())
+      .then(result => {
+        if (result.duplicate){
+          statusMsg.textContent = "You have already submitted your attendance.";
+          statusMsg.className = "status error";
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Record attendance";
+          return;
+        }
+        submitAttendance(fullNameVal, studentNumberVal, dateVal, subjectVal);
+      })
+      .catch(() => {
+        // If the check itself fails to connect, don't block submission —
+        // just proceed, and rely on the server-side check inside doPost.
+        submitAttendance(fullNameVal, studentNumberVal, dateVal, subjectVal);
+      });
+  });
+
+  function submitAttendance(fullNameVal, studentNumberVal, dateVal, subjectVal){
+    const params = new URLSearchParams();
+    params.append('fullName', fullNameVal);
+    params.append('studentNumber', studentNumberVal);
+    params.append('attendanceDate', dateVal);
+    params.append('subject', subjectVal);
+
+    submitBtn.textContent = "Recording...";
 
     fetch(SCRIPT_URL, {
       method: "POST",
@@ -505,6 +540,10 @@
       body: params
     })
     .then(() => {
+      // Note: with mode "no-cors" we can't read the actual response body,
+      // so we can't tell here if the server-side safety check caught a
+      // race-condition duplicate. The pre-check above handles the normal
+      // case; this covers the rare edge case gracefully either way.
       statusMsg.textContent = "Attendance recorded. Thank you!";
       statusMsg.className = "status success";
 
@@ -532,7 +571,7 @@
       submitBtn.disabled = false;
       submitBtn.textContent = "Record attendance";
     });
-  });
+  }
 
   updateProgress();
 </script>
