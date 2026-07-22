@@ -240,6 +240,24 @@
     color:var(--blue-900);
     margin-bottom:6px;
   }
+  .attendance-title-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:6px;
+  }
+  .attendance-title-row .activity-group-title{
+    margin-bottom:0;
+  }
+  .attendance-count-badge{
+    font-size:10.5px;
+    font-weight:700;
+    color:#fff;
+    background:var(--blue-500);
+    padding:2px 8px;
+    border-radius:20px;
+    letter-spacing:.02em;
+  }
   .activity-chip-row{
     display:flex;
     flex-wrap:wrap;
@@ -280,7 +298,7 @@
 
   <div class="search-card">
     <div class="search-row">
-      <input type="text" id="searchInput" placeholder="e.g. 2025-14723-MN-0" autocomplete="off">
+      <input type="text" id="searchInput" placeholder="e.g. 2025-xxxxx-MN-0" autocomplete="off">
       <button id="searchBtn">Search</button>
     </div>
     <p class="hint">Enter a student number to pull their record from the 1st Sem Summary, Base Tracker, 2nd Sem Grades, and 1st Sem Enrollment sheets.</p>
@@ -352,6 +370,45 @@
     });
   }
 
+  function renderAttendanceGroups(body, entries){
+    // entries look like ["ENGL 017", "3 time(s) — 07/20/2026, 07/21/2026, 07/22/2026"]
+    entries.forEach(([subject, value]) => {
+      const groupWrap = document.createElement('div');
+      groupWrap.className = 'activity-group';
+
+      const titleRow = document.createElement('div');
+      titleRow.className = 'attendance-title-row';
+
+      const title = document.createElement('span');
+      title.className = 'activity-group-title';
+      title.textContent = subject;
+      titleRow.appendChild(title);
+
+      const dashIdx = String(value).indexOf('\u2014');
+      const countPart = dashIdx === -1 ? String(value).trim() : String(value).slice(0, dashIdx).trim();
+      const datesPart = dashIdx === -1 ? '' : String(value).slice(dashIdx + 1).trim();
+
+      const countBadge = document.createElement('span');
+      countBadge.className = 'attendance-count-badge';
+      countBadge.textContent = countPart;
+      titleRow.appendChild(countBadge);
+
+      groupWrap.appendChild(titleRow);
+
+      const chipRow = document.createElement('div');
+      chipRow.className = 'activity-chip-row';
+      const dates = datesPart ? datesPart.split(',').map(d => d.trim()).filter(Boolean) : [];
+      dates.forEach(dateLabel => {
+        const chip = document.createElement('span');
+        chip.className = 'activity-chip done';
+        chip.textContent = dateLabel;
+        chipRow.appendChild(chip);
+      });
+      groupWrap.appendChild(chipRow);
+      body.appendChild(groupWrap);
+    });
+  }
+
   function findStudentName(data){
     for (const sheetKey of Object.keys(data)){
       const record = data[sheetKey];
@@ -399,6 +456,8 @@
         body.innerHTML = '<p class="no-record">No record found in this sheet.</p>';
       } else if (sheetKey === 'Base_Tracker_ACTIVITY') {
         renderGroupedActivities(body, filteredEntries);
+      } else if (sheetKey === 'Base_Tracker') {
+        renderAttendanceGroups(body, filteredEntries);
       } else {
         const grid = document.createElement('div');
         grid.className = 'kv-grid';
