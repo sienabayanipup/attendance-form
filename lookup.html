@@ -186,6 +186,25 @@
     text-transform:uppercase;
     color:var(--blue-900);
     border-bottom:1px solid var(--line);
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    user-select:none;
+  }
+  .record-card .rc-chevron{
+    font-size:11px;
+    transition:transform .2s ease;
+    flex:0 0 auto;
+  }
+  .record-card.collapsed .rc-chevron{
+    transform:rotate(-90deg);
+  }
+  .record-card.collapsed .rc-body{
+    display:none;
+  }
+  .record-card.collapsed .rc-header{
+    border-bottom:none;
   }
   .record-card .rc-body{
     padding:14px 18px 18px;
@@ -441,7 +460,20 @@
 
       const header = document.createElement('div');
       header.className = 'rc-header';
-      header.textContent = label;
+
+      const headerLabel = document.createElement('span');
+      headerLabel.textContent = label;
+      header.appendChild(headerLabel);
+
+      const chevron = document.createElement('span');
+      chevron.className = 'rc-chevron';
+      chevron.textContent = '\u25BC';
+      header.appendChild(chevron);
+
+      header.addEventListener('click', () => {
+        card.classList.toggle('collapsed');
+      });
+
       card.appendChild(header);
 
       const body = document.createElement('div');
