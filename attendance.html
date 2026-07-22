@@ -494,84 +494,62 @@
     const subjectVal = subjectInput.value;
 
     submitBtn.disabled = true;
-    submitBtn.textContent = "Checking...";
+    submitBtn.textContent = "Recording...";
     statusMsg.textContent = "";
     statusMsg.className = "status";
 
-    // Check for a duplicate first — GET responses are readable, unlike the
-    // POST response below, which Apps Script serves without CORS headers.
-    const checkUrl = SCRIPT_URL
-      + "?action=checkDuplicate"
+    // Submitted as a GET request (not POST) so the response is actually
+    // readable — Apps Script doesn't send CORS headers on POST responses,
+    // which previously caused the form to show "recorded" even when the
+    // server had correctly blocked a duplicate.
+    const submitUrl = SCRIPT_URL
+      + "?action=submitAttendance"
+      + "&fullName=" + encodeURIComponent(fullNameVal)
       + "&studentNumber=" + encodeURIComponent(studentNumberVal)
-      + "&subject=" + encodeURIComponent(subjectVal)
-      + "&date=" + encodeURIComponent(dateVal);
+      + "&attendanceDate=" + encodeURIComponent(dateVal)
+      + "&subject=" + encodeURIComponent(subjectVal);
 
-    fetch(checkUrl)
+    fetch(submitUrl)
       .then(res => res.json())
       .then(result => {
-        if (result.duplicate){
-          statusMsg.textContent = "You have already submitted your attendance.";
+        if (result.result === "duplicate"){
+          statusMsg.textContent = "You already submitted your attendance for " + (result.subject || subjectVal) + ".";
           statusMsg.className = "status error";
-          submitBtn.disabled = false;
-          submitBtn.textContent = "Record attendance";
           return;
         }
-        submitAttendance(fullNameVal, studentNumberVal, dateVal, subjectVal);
+        if (result.result === "success"){
+          statusMsg.textContent = "Attendance recorded. Thank you!";
+          statusMsg.className = "status success";
+
+          const now = new Date();
+          stampDate.textContent = now.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+          stampOverlay.classList.remove('show');
+          void stampOverlay.offsetWidth;
+          stampOverlay.classList.add('show');
+
+          form.reset();
+          fullNameInput.classList.remove('invalid');
+          fullNameError.classList.remove('show');
+          studentNumberInput.classList.remove('invalid');
+          studentNumberError.classList.remove('show');
+          attendanceDateInput.classList.remove('invalid');
+          attendanceDateError.classList.remove('show');
+          attendanceDateInput.valueAsDate = new Date();
+          updateProgress();
+          return;
+        }
+        statusMsg.textContent = "Something went wrong. Please try again.";
+        statusMsg.className = "status error";
       })
       .catch(() => {
-        // If the check itself fails to connect, don't block submission —
-        // just proceed, and rely on the server-side check inside doPost.
-        submitAttendance(fullNameVal, studentNumberVal, dateVal, subjectVal);
+        statusMsg.textContent = "Could not connect. Check your internet and try again.";
+        statusMsg.className = "status error";
+      })
+      .finally(() => {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Record attendance";
       });
   });
-
-  function submitAttendance(fullNameVal, studentNumberVal, dateVal, subjectVal){
-    const params = new URLSearchParams();
-    params.append('fullName', fullNameVal);
-    params.append('studentNumber', studentNumberVal);
-    params.append('attendanceDate', dateVal);
-    params.append('subject', subjectVal);
-
-    submitBtn.textContent = "Recording...";
-
-    fetch(SCRIPT_URL, {
-      method: "POST",
-      mode: "no-cors",
-      body: params
-    })
-    .then(() => {
-      // Note: with mode "no-cors" we can't read the actual response body,
-      // so we can't tell here if the server-side safety check caught a
-      // race-condition duplicate. The pre-check above handles the normal
-      // case; this covers the rare edge case gracefully either way.
-      statusMsg.textContent = "Attendance recorded. Thank you!";
-      statusMsg.className = "status success";
-
-      const now = new Date();
-      stampDate.textContent = now.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
-      stampOverlay.classList.remove('show');
-      void stampOverlay.offsetWidth;
-      stampOverlay.classList.add('show');
-
-      form.reset();
-      fullNameInput.classList.remove('invalid');
-      fullNameError.classList.remove('show');
-      studentNumberInput.classList.remove('invalid');
-      studentNumberError.classList.remove('show');
-      attendanceDateInput.classList.remove('invalid');
-      attendanceDateError.classList.remove('show');
-      attendanceDateInput.valueAsDate = new Date();
-      updateProgress();
-    })
-    .catch(() => {
-      statusMsg.textContent = "Could not connect. Check your internet and try again.";
-      statusMsg.className = "status error";
-    })
-    .finally(() => {
-      submitBtn.disabled = false;
-      submitBtn.textContent = "Record attendance";
-    });
-  }
 
   updateProgress();
 </script>
