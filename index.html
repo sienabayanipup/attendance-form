@@ -113,7 +113,7 @@
     font-size:15px;
     font-weight:600;
     color:var(--ink);
-    margin:0 0 20px;
+    margin:0 0 32px;
   }
 
   .cards{
@@ -128,22 +128,30 @@
     padding:30px 22px;
     color:#fff;
     box-shadow:0 10px 26px rgba(0,0,0,0.14);
-    transition:transform .2s ease, box-shadow .2s ease;
+    transition:transform .2s ease, box-shadow .2s ease, filter .2s ease;
     cursor:pointer;
   }
   a.card:hover{
-    transform:translateY(-4px) scale(1.03);
-    box-shadow:0 18px 38px rgba(0,0,0,0.22);
+    transform:translateY(-8px) scale(1.03);
+    filter:brightness(1.06);
   }
   a.card:active{
-    transform:translateY(-1px) scale(1.01);
+    transform:translateY(-3px) scale(1.01);
+    filter:brightness(1.02);
   }
   .card.attendance{ background:linear-gradient(160deg, var(--maroon-700), var(--maroon-900)); }
+  .card.attendance:hover{ box-shadow:0 18px 35px rgba(122,12,30,0.32); }
   .card.lookup{ background:linear-gradient(160deg, var(--blue-700), var(--blue-900)); }
+  .card.lookup:hover{ box-shadow:0 18px 35px rgba(19,78,143,0.32); }
   .card .icon{
     font-size:40px;
     margin-bottom:14px;
     line-height:1;
+    display:inline-block;
+    transition:transform .2s ease;
+  }
+  a.card:hover .icon{
+    transform:scale(1.08);
   }
   .card .title{
     font-family:'Plus Jakarta Sans', sans-serif;
