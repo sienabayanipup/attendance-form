@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PUP OUS Mark My Activity</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --green-900:#0f3d24;
+    --green-700:#1a6b3f;
+    --green-500:#2f9457;
+    --accent-500:#ffd166;
+    --accent-100:#fff3d6;
+    --paper:#faf6ea;
+    --card:#fffdf7;
+    --line:#e3d3a0;
+    --ink:#2b1210;
+    --ink-soft:#6b5347;
+    --error:#b3402a;
+    --good:#2f6f42;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Inter', Arial, sans-serif;
+    background:
+      radial-gradient(circle at 15% 10%, rgba(122,12,30,0.06), transparent 40%),
+      radial-gradient(circle at 90% 85%, rgba(255,209,102,0.10), transparent 45%),
+      var(--paper);
+    color:var(--ink);
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:28px 16px;
+  }
+
+  .sheet{
+    width:100%;
+    max-width:460px;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:12px;
+    box-shadow:0 12px 34px rgba(15,61,36,0.16);
+    overflow:hidden;
+  }
+
+  .letterhead{
+    background:linear-gradient(160deg, var(--green-700) 0%, var(--green-900) 100%);
+    color:#fff;
+    padding:22px 26px 20px;
+    border-bottom:4px solid var(--accent-500);
+  }
+  .eyebrow{
+    margin:0 0 3px;
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--accent-500);
+  }
+  h1{
+    margin:0;
+    font-family:'Playfair Display', serif;
+    font-weight:700;
+    font-size:22px;
+  }
+
+  form{
+    padding:26px 26px 28px;
+  }
+
+  .field{ margin-bottom:18px; }
+  label{
+    display:block;
+    font-size:12.5px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    margin-bottom:7px;
+    color:var(--green-700);
+  }
+  input, select{
+    width:100%;
+    padding:11px 12px;
+    font-size:15px;
+    font-family:'Inter', sans-serif;
+    border:1.5px solid var(--line);
+    border-radius:7px;
+    background:#fffefb;
+    color:var(--ink);
+  }
+  #studentNumber{
+    font-family:'IBM Plex Mono', monospace;
+  }
+  input:focus, select:focus{
+    outline:none;
+    border-color:var(--green-500);
+    box-shadow:0 0 0 3px rgba(255,209,102,0.35);
+  }
+  select:disabled{ opacity:.6; }
+
+  button{
+    width:100%;
+    margin-top:6px;
+    padding:14px;
+    background-image:linear-gradient(160deg, var(--green-500), var(--green-900));
+    color:#fff;
+    font-size:15px;
+    font-weight:700;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    box-shadow:0 6px 16px rgba(15,61,36,0.3);
+    transition:transform .12s ease, box-shadow .12s ease;
+  }
+  button:hover:not(:disabled){ transform:translateY(-1px); }
+  button:disabled{ opacity:.6; cursor:not-allowed; transform:none; }
+
+  .status{
+    margin-top:14px;
+    font-size:13.5px;
+    text-align:center;
+    min-height:18px;
+    font-weight:600;
+  }
+  .status.success{ color:var(--good); }
+  .status.error{ color:var(--error); }
+  .status.loading{ color:var(--ink-soft); }
+
+  .disclaimer{
+    font-size:11.5px;
+    line-height:1.5;
+    color:var(--ink-soft);
+    text-align:center;
+    padding:0 26px 20px;
+    margin:0;
+  }
+</style>
+</head>
+<body>
+
+<div class="sheet">
+  <div class="letterhead">
+    <p class="eyebrow">BSOAOUMN 2-7</p>
+    <h1>Mark My Activity</h1>
+  </div>
+
+  <form id="markForm">
+    <div class="field">
+      <label for="studentNumber">Student number</label>
+      <input type="text" id="studentNumber" placeholder="e.g. 2025-14723-MN-0" required autocomplete="off">
+    </div>
+
+    <div class="field">
+      <label for="subject">Subject</label>
+      <select id="subject" required>
+        <option value="" disabled selected>Select a subject</option>
+        <option value="ENGL 017">ENGL 017</option>
+        <option value="GEED 033">GEED 033</option>
+        <option value="OFAD 201">OFAD 201</option>
+        <option value="PATHFIT 3">PATHFIT 3</option>
+        <option value="GEED 003">GEED 003</option>
+        <option value="OFAD 203">OFAD 203</option>
+        <option value="OFAD 202">OFAD 202</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="activityDate">Activity date</label>
+      <select id="activityDate" required disabled>
+        <option value="" disabled selected>Select a subject first</option>
+      </select>
+    </div>
+
+    <button type="submit" id="submitBtn">Mark as done</button>
+    <p class="status" id="statusMsg"></p>
+  </form>
+
+  <p class="disclaimer">This form is for the exclusive use of BSOAOUMN 2-7 to confirm your own completed activities. Please enter your own student number only.</p>
+</div>
+
+<script>
+  const SCRIPT_URL = "PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE";
+
+  const subjectSelect = document.getElementById('subject');
+  const dateSelect = document.getElementById('activityDate');
+  const form = document.getElementById('markForm');
+  const statusMsg = document.getElementById('statusMsg');
+  const submitBtn = document.getElementById('submitBtn');
+
+  subjectSelect.addEventListener('change', function(){
+    const subject = subjectSelect.value;
+    dateSelect.innerHTML = '<option value="" disabled selected>Loading dates...</option>';
+    dateSelect.disabled = true;
+
+    if (SCRIPT_URL.includes("PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE")){
+      dateSelect.innerHTML = '<option value="" disabled selected>Setup needed: add Script URL</option>';
+      return;
+    }
+
+    fetch(SCRIPT_URL + "?action=getActivityDates&subject=" + encodeURIComponent(subject))
+      .then(res => res.json())
+      .then(data => {
+        const dates = data.dates || [];
+        if (dates.length === 0){
+          dateSelect.innerHTML = '<option value="" disabled selected>No activity dates found for this subject</option>';
+          return;
+        }
+        dateSelect.innerHTML = '<option value="" disabled selected>Select a date</option>' +
+          dates.map(d => `<option value="${d}">${d}</option>`).join('');
+        dateSelect.disabled = false;
+      })
+      .catch(() => {
+        dateSelect.innerHTML = '<option value="" disabled selected>Could not load dates</option>';
+      });
+  });
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+
+    if (SCRIPT_URL.includes("PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE")){
+      statusMsg.textContent = "Setup needed: add your Google Apps Script Web App URL in the code.";
+      statusMsg.className = "status error";
+      return;
+    }
+
+    const studentNumber = document.getElementById('studentNumber').value.trim();
+    const subject = subjectSelect.value;
+    const dateLabel = dateSelect.value;
+
+    if (!studentNumber || !subject || !dateLabel){
+      statusMsg.textContent = "Please fill in all fields.";
+      statusMsg.className = "status error";
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Checking...";
+    statusMsg.textContent = "";
+    statusMsg.className = "status";
+
+    // Check current status first so we can tell the student if they've
+    // already marked this activity, instead of silently overwriting it.
+    const statusUrl = SCRIPT_URL
+      + "?action=getActivityStatus"
+      + "&studentNumber=" + encodeURIComponent(studentNumber)
+      + "&subject=" + encodeURIComponent(subject)
+      + "&dateLabel=" + encodeURIComponent(dateLabel);
+
+    fetch(statusUrl)
+      .then(res => res.json())
+      .then(statusResult => {
+        if (statusResult.error){
+          statusMsg.textContent = statusResult.error;
+          statusMsg.className = "status error";
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Mark as done";
+          return;
+        }
+        if (statusResult.done){
+          statusMsg.textContent = "You have already marked this activity as done.";
+          statusMsg.className = "status error";
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Mark as done";
+          return;
+        }
+
+        submitBtn.textContent = "Saving...";
+        const markUrl = SCRIPT_URL
+          + "?action=markActivity"
+          + "&studentNumber=" + encodeURIComponent(studentNumber)
+          + "&subject=" + encodeURIComponent(subject)
+          + "&dateLabel=" + encodeURIComponent(dateLabel)
+          + "&done=true";
+
+        fetch(markUrl)
+          .then(res => res.json())
+          .then(result => {
+            if (result.result === "success"){
+              statusMsg.textContent = "Marked as done. Thank you!";
+              statusMsg.className = "status success";
+              form.reset();
+              dateSelect.innerHTML = '<option value="" disabled selected>Select a subject first</option>';
+              dateSelect.disabled = true;
+            } else {
+              statusMsg.textContent = result.message || "Something went wrong.";
+              statusMsg.className = "status error";
+            }
+          })
+          .catch(() => {
+            statusMsg.textContent = "Could not connect. Check your internet and try again.";
+            statusMsg.className = "status error";
+          })
+          .finally(() => {
+            submitBtn.disabled = false;
+            submitBtn.textContent = "Mark as done";
+          });
+      })
+      .catch(() => {
+        statusMsg.textContent = "Could not connect. Check your internet and try again.";
+        statusMsg.className = "status error";
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Mark as done";
+      });
+  });
+</script>
+
+</body>
+</html>
