@@ -39,30 +39,6 @@
     margin:0 auto;
   }
 
-  .portal-bar{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:6px;
-    font-size:12px;
-    font-weight:700;
-    letter-spacing:.04em;
-    text-transform:uppercase;
-    color:var(--ink-soft);
-    text-decoration:none;
-    margin:0 auto 16px;
-    padding:6px 14px;
-    border-radius:20px;
-    background:rgba(255,255,255,0.6);
-    border:1px solid var(--line);
-    white-space:nowrap;
-    width:fit-content;
-    transition:color .15s ease, border-color .15s ease;
-  }
-  .portal-bar:hover{
-    color:var(--blue-700);
-    border-color:var(--blue-500);
-  }
 
   .page-desc{
     margin:6px 0 0;
@@ -357,7 +333,6 @@
 </head>
 <body>
 
-<a class="portal-bar" href="index.html">&#8962; BSOAOUMN Student Portal</a>
 
 <div class="wrap">
   <div class="letterhead">
@@ -375,7 +350,7 @@
 
   <div class="search-card">
     <div class="search-row">
-      <input type="text" id="searchInput" placeholder="e.g. 2025-xxxxx-MN-0" autocomplete="off">
+      <input type="text" id="searchInput" placeholder="e.g. 202x-xxxxx-MN-0" autocomplete="off">
       <button id="searchBtn">Search</button>
     </div>
     <p class="hint">Enter a student number to pull their record from the 1st Sem Summary, Base Tracker, 2nd Sem Grades, and 1st Sem Enrollment sheets.</p>
