@@ -32,9 +32,40 @@
     color:var(--ink);
     min-height:100vh;
     display:flex;
+    flex-direction:column;
     align-items:center;
     justify-content:center;
     padding:28px 16px;
+  }
+
+  .portal-bar{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    text-decoration:none;
+    margin-bottom:16px;
+    padding:6px 14px;
+    border-radius:20px;
+    background:rgba(255,255,255,0.6);
+    border:1px solid var(--line);
+    white-space:nowrap;
+    transition:color .15s ease, border-color .15s ease;
+  }
+  .portal-bar:hover{
+    color:var(--maroon-700);
+    border-color:var(--maroon-500);
+  }
+
+  .page-desc{
+    margin:6px 0 0;
+    font-size:12.5px;
+    color:rgba(255,255,255,0.82);
+    font-weight:500;
   }
 
   .sheet{
@@ -62,11 +93,30 @@
   .letterhead{
     background:linear-gradient(160deg, var(--maroon-700) 0%, var(--maroon-900) 100%);
     color:#fff;
-    padding:22px 26px 20px;
+    padding:16px 26px 20px;
+    position:relative;
+  }
+  .back-link{
+    display:inline-flex;
+    align-items:center;
+    gap:5px;
+    font-size:12px;
+    font-weight:600;
+    color:rgba(255,255,255,0.82);
+    text-decoration:none;
+    margin-bottom:10px;
+    transition:color .15s ease;
+  }
+  .back-link:hover{ color:#fff; }
+  .letterhead-divider{
+    height:1px;
+    background:rgba(255,255,255,0.18);
+    margin-bottom:14px;
+  }
+  .letterhead-row{
     display:flex;
     align-items:center;
     gap:14px;
-    position:relative;
   }
   .seal{
     flex:0 0 auto;
@@ -115,14 +165,6 @@
   form{
     position:relative;
     padding:26px 26px 28px;
-    background-image:repeating-linear-gradient(
-      to bottom,
-      transparent 0px,
-      transparent 38px,
-      var(--line) 38px,
-      var(--line) 39px
-    );
-    background-position: 0 96px;
   }
 
   .field{ margin-bottom:20px; }
@@ -174,6 +216,9 @@
     gap:8px;
   }
   .chip{ position:relative; }
+  .chip:last-child{
+    grid-column:1 / -1;
+  }
   .chip input{
     position:absolute;
     opacity:0;
@@ -318,14 +363,21 @@
 </head>
 <body>
 
+<a class="portal-bar" href="index.html">&#8962; BSOAOUMN Student Portal</a>
+
 <div class="sheet" id="sheetCard">
   <p class="ribbon">Official Attendance Record</p>
 
   <div class="letterhead">
-    <div class="seal">PUP</div>
-    <div class="letterhead-text">
-      <p class="eyebrow">BSOAOUMN 2-7</p>
-      <h1>Weekly Synchronous Attendance</h1>
+    <a class="back-link" href="index.html">&larr; Back to Dashboard</a>
+    <div class="letterhead-divider"></div>
+    <div class="letterhead-row">
+      <div class="seal">PUP</div>
+      <div class="letterhead-text">
+        <p class="eyebrow">BSOAOUMN 2-7</p>
+        <h1>Weekly Synchronous Attendance</h1>
+        <p class="page-desc">Record your attendance for this week's synchronous classes.</p>
+      </div>
     </div>
   </div>
 
@@ -340,7 +392,7 @@
 
     <div class="field">
       <label for="studentNumber">Student number</label>
-      <input type="text" id="studentNumber" name="studentNumber" placeholder="e.g. 2025-12345-MN-0" required>
+      <input type="text" id="studentNumber" name="studentNumber" placeholder="e.g. 202x-xxxxx-MN-0" required>
       <p class="field-error" id="studentNumberError">Please follow the format shown: 2025-12345-MN-0</p>
     </div>
 
