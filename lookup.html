@@ -39,16 +39,67 @@
     margin:0 auto;
   }
 
+  .portal-bar{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    text-decoration:none;
+    margin:0 auto 16px;
+    padding:6px 14px;
+    border-radius:20px;
+    background:rgba(255,255,255,0.6);
+    border:1px solid var(--line);
+    white-space:nowrap;
+    width:fit-content;
+    transition:color .15s ease, border-color .15s ease;
+  }
+  .portal-bar:hover{
+    color:var(--blue-700);
+    border-color:var(--blue-500);
+  }
+
+  .page-desc{
+    margin:6px 0 0;
+    font-size:12.5px;
+    color:rgba(255,255,255,0.82);
+    font-weight:500;
+  }
+
   .letterhead{
     background:linear-gradient(160deg, var(--blue-700) 0%, var(--blue-900) 100%);
     color:#fff;
-    padding:24px 28px 22px;
+    padding:18px 28px 22px;
     border-radius:12px 12px 0 0;
     border-bottom:4px solid var(--accent-500);
+    box-shadow:0 8px 24px rgba(11,43,77,0.16);
+  }
+  .back-link{
+    display:inline-flex;
+    align-items:center;
+    gap:5px;
+    font-size:12px;
+    font-weight:600;
+    color:rgba(255,255,255,0.82);
+    text-decoration:none;
+    margin-bottom:10px;
+    transition:color .15s ease;
+  }
+  .back-link:hover{ color:#fff; }
+  .letterhead-divider{
+    height:1px;
+    background:rgba(255,255,255,0.18);
+    margin-bottom:14px;
+  }
+  .letterhead-row{
     display:flex;
     align-items:center;
     gap:14px;
-    box-shadow:0 8px 24px rgba(11,43,77,0.16);
   }
   .seal{
     flex:0 0 auto;
@@ -306,12 +357,19 @@
 </head>
 <body>
 
+<a class="portal-bar" href="index.html">&#8962; BSOAOUMN Student Portal</a>
+
 <div class="wrap">
   <div class="letterhead">
-    <div class="seal">PUP</div>
-    <div>
-      <p class="eyebrow">BSOAOUMN 2-7</p>
-      <h1>Student Lookup</h1>
+    <a class="back-link" href="index.html">&larr; Back to Dashboard</a>
+    <div class="letterhead-divider"></div>
+    <div class="letterhead-row">
+      <div class="seal">PUP</div>
+      <div>
+        <p class="eyebrow">BSOAOUMN 2-7</p>
+        <h1>Student Lookup</h1>
+        <p class="page-desc">Monitor your attendance, activities, grades, and enrollment in one place.</p>
+      </div>
     </div>
   </div>
 
