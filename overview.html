@@ -273,6 +273,38 @@
     color:var(--ink-soft);
     font-weight:400;
   }
+  .present-item{
+    padding:8px 14px;
+    background:#e6f4ea;
+    border:1px solid #bfe3cc;
+    border-radius:8px;
+    font-size:13px;
+    font-weight:600;
+    color:var(--good);
+  }
+  .present-item span{
+    color:var(--ink-soft);
+    font-weight:400;
+  }
+  .roster-columns{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+    margin-top:16px;
+  }
+  .roster-col-title{
+    font-size:11.5px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    margin-bottom:8px;
+  }
+  .roster-col-title.present-title{ color:var(--good); }
+  .roster-col-title.absent-title{ color:var(--error); }
+
+  @media (max-width:480px){
+    .roster-columns{ grid-template-columns:1fr; }
+  }
 </style>
 </head>
 <body>
@@ -372,15 +404,33 @@
           <div class="check-summary-box absent"><div class="num">${data.absentCount}</div><div class="lbl">Absent</div></div>
         </div>`;
 
-        if (data.absentCount > 0){
+        html += `<div class="roster-columns">`;
+
+        html += `<div><div class="roster-col-title present-title">Present (${data.presentCount})</div>`;
+        if (data.presentees && data.presentees.length > 0){
+          html += `<div class="absentee-list">`;
+          data.presentees.forEach(s => {
+            html += `<div class="present-item">${s.name} <span>(${s.studentNumber})</span></div>`;
+          });
+          html += `</div>`;
+        } else {
+          html += `<p class="status-msg" style="padding:6px 0; text-align:left;">No one checked in yet.</p>`;
+        }
+        html += `</div>`;
+
+        html += `<div><div class="roster-col-title absent-title">Absent (${data.absentCount})</div>`;
+        if (data.absentees && data.absentees.length > 0){
           html += `<div class="absentee-list">`;
           data.absentees.forEach(s => {
             html += `<div class="absentee-item">${s.name} <span>(${s.studentNumber})</span></div>`;
           });
           html += `</div>`;
         } else {
-          html += `<p class="status-msg" style="padding:6px 0;">Everyone was present. Nice!</p>`;
+          html += `<p class="status-msg" style="padding:6px 0; text-align:left;">Everyone was present. Nice!</p>`;
         }
+        html += `</div>`;
+
+        html += `</div>`;
 
         checkResult.innerHTML = html;
       })
