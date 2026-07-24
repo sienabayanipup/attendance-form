@@ -9,9 +9,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
   :root{
-    --green-900:#0f3d24;
-    --green-700:#1a6b3f;
-    --green-500:#2f9457;
+    --green-900:#0c4028;
+    --green-700:#1d7c50;
+    --green-500:#29a36a;
     --accent-500:#ffd166;
     --accent-100:#fff3d6;
     --paper:#faf6ea;
@@ -39,11 +39,10 @@
     padding:28px 16px;
   }
 
-
   .page-desc{
     margin:6px 0 0;
     font-size:12.5px;
-    color:rgba(255,255,255,0.82);
+    color:rgba(255,255,255,0.85);
     font-weight:500;
   }
 
@@ -53,14 +52,14 @@
     background:var(--card);
     border:1px solid var(--line);
     border-radius:12px;
-    box-shadow:0 12px 34px rgba(15,61,36,0.16);
+    box-shadow:0 12px 34px rgba(15,61,36,0.14);
     overflow:hidden;
   }
 
   .letterhead{
     background:linear-gradient(160deg, var(--green-700) 0%, var(--green-900) 100%);
     color:#fff;
-    padding:16px 26px 20px;
+    padding:18px 26px 22px;
     border-bottom:4px solid var(--accent-500);
   }
   .back-link{
@@ -69,9 +68,9 @@
     gap:5px;
     font-size:12px;
     font-weight:600;
-    color:rgba(255,255,255,0.82);
+    color:rgba(255,255,255,0.85);
     text-decoration:none;
-    margin-bottom:10px;
+    margin-bottom:12px;
     transition:color .15s ease;
   }
   .back-link:hover{ color:#fff; }
@@ -127,24 +126,33 @@
     border-color:var(--green-500);
     box-shadow:0 0 0 3px rgba(255,209,102,0.35);
   }
-  select:disabled{ opacity:.6; }
+  select:disabled{ opacity:.65; }
+  input.invalid{ border-color:var(--error); }
+  .field-error{
+    display:none;
+    font-size:11.5px;
+    color:var(--error);
+    font-weight:600;
+    margin:6px 0 0;
+  }
+  .field-error.show{ display:block; }
 
   button{
     width:100%;
     margin-top:6px;
     padding:14px;
-    background-image:linear-gradient(160deg, var(--green-500), var(--green-900));
+    background:linear-gradient(160deg, var(--green-500), var(--green-900));
     color:#fff;
     font-size:15px;
     font-weight:700;
     border:none;
     border-radius:8px;
     cursor:pointer;
-    box-shadow:0 6px 16px rgba(15,61,36,0.3);
-    transition:transform .12s ease, box-shadow .12s ease;
+    box-shadow:0 6px 16px rgba(15,61,36,0.25);
+    transition:transform .12s ease, box-shadow .12s ease, opacity .12s ease;
   }
   button:hover:not(:disabled){ transform:translateY(-1px); }
-  button:disabled{ opacity:.6; cursor:not-allowed; transform:none; }
+  button:disabled{ opacity:.65; cursor:not-allowed; transform:none; }
 
   .status{
     margin-top:14px;
@@ -155,7 +163,6 @@
   }
   .status.success{ color:var(--good); }
   .status.error{ color:var(--error); }
-  .status.loading{ color:var(--ink-soft); }
 
   .disclaimer{
     font-size:11.5px;
@@ -169,7 +176,6 @@
 </head>
 <body>
 
-
 <div class="sheet">
   <div class="letterhead">
     <a class="back-link" href="index.html">&larr; Back to Dashboard</a>
@@ -182,7 +188,8 @@
   <form id="markForm">
     <div class="field">
       <label for="studentNumber">Student number</label>
-      <input type="text" id="studentNumber" placeholder="e.g. 202x-xxxxx-MN-0" required autocomplete="off">
+      <input type="text" id="studentNumber" placeholder="e.g. 2025-14723-MN-0" required autocomplete="off">
+      <p class="field-error" id="studentNumberError">Please follow the format shown: 2025-14723-MN-0</p>
     </div>
 
     <div class="field">
@@ -221,6 +228,26 @@
   const form = document.getElementById('markForm');
   const statusMsg = document.getElementById('statusMsg');
   const submitBtn = document.getElementById('submitBtn');
+  const studentNumberInput = document.getElementById('studentNumber');
+  const studentNumberError = document.getElementById('studentNumberError');
+
+  const REMEMBER_KEY = 'bsoaoumn_student_number';
+  const rememberedNumber = localStorage.getItem(REMEMBER_KEY);
+  if (rememberedNumber) studentNumberInput.value = rememberedNumber;
+
+  const studentNumberPattern = /^\d{4}-\d{5}-[A-Za-z]{2}-\d$/;
+
+  function validateStudentNumber(){
+    const value = studentNumberInput.value.trim();
+    const valid = studentNumberPattern.test(value);
+    studentNumberInput.classList.toggle('invalid', value !== '' && !valid);
+    studentNumberError.classList.toggle('show', value !== '' && !valid);
+    return valid;
+  }
+  studentNumberInput.addEventListener('blur', validateStudentNumber);
+  studentNumberInput.addEventListener('input', function(){
+    if (studentNumberInput.classList.contains('invalid')) validateStudentNumber();
+  });
 
   subjectSelect.addEventListener('change', function(){
     const subject = subjectSelect.value;
@@ -258,7 +285,7 @@
       return;
     }
 
-    const studentNumber = document.getElementById('studentNumber').value.trim();
+    const studentNumber = studentNumberInput.value.trim();
     const subject = subjectSelect.value;
     const dateLabel = dateSelect.value;
 
@@ -268,13 +295,18 @@
       return;
     }
 
+    if (!validateStudentNumber()){
+      statusMsg.textContent = "Please correct your student number format before submitting.";
+      statusMsg.className = "status error";
+      studentNumberInput.focus();
+      return;
+    }
+
     submitBtn.disabled = true;
     submitBtn.textContent = "Checking...";
     statusMsg.textContent = "";
     statusMsg.className = "status";
 
-    // Check current status first so we can tell the student if they've
-    // already marked this activity, instead of silently overwriting it.
     const statusUrl = SCRIPT_URL
       + "?action=getActivityStatus"
       + "&studentNumber=" + encodeURIComponent(studentNumber)
@@ -313,7 +345,11 @@
             if (result.result === "success"){
               statusMsg.textContent = "Marked as done. Thank you!";
               statusMsg.className = "status success";
+              localStorage.setItem(REMEMBER_KEY, studentNumber);
               form.reset();
+              studentNumberInput.value = studentNumber;
+              studentNumberInput.classList.remove('invalid');
+              studentNumberError.classList.remove('show');
               dateSelect.innerHTML = '<option value="" disabled selected>Select a subject first</option>';
               dateSelect.disabled = true;
             } else {
