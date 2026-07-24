@@ -9,9 +9,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --gold-900:#5c460f;
-    --gold-700:#8a6d1f;
-    --gold-500:#c9971f;
+    --gold-900:#402d0c;
+    --gold-700:#7c591d;
+    --gold-500:#a37629;
     --accent-500:#f4d35e;
     --accent-100:#fdf3d9;
     --paper:#faf6ea;
@@ -305,6 +305,92 @@
   @media (max-width:480px){
     .roster-columns{ grid-template-columns:1fr; }
   }
+
+  .activity-chevron{
+    flex:0 0 auto;
+    font-size:11px;
+    color:var(--ink-soft);
+    transition:transform .15s ease;
+    margin-left:4px;
+  }
+  .activity-detail{
+    margin:0 0 14px 92px;
+    padding:10px 12px;
+    background:#fdfaf3;
+    border:1px solid var(--line);
+    border-radius:8px;
+  }
+  .activity-date-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:5px 0;
+  }
+  .activity-date-label{
+    flex:0 0 84px;
+    font-size:11.5px;
+    color:var(--ink-soft);
+  }
+  .activity-date-pct{
+    flex:0 0 46px;
+    text-align:right;
+    font-size:11.5px;
+    font-weight:700;
+    color:var(--gold-700);
+  }
+
+  .trend-bars{
+    display:flex;
+    align-items:flex-end;
+    gap:10px;
+    height:120px;
+    padding:0 4px;
+    margin-bottom:8px;
+  }
+  .trend-col{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    height:100%;
+    justify-content:flex-end;
+  }
+  .trend-bar-track{
+    width:100%;
+    max-width:36px;
+    height:80px;
+    display:flex;
+    align-items:flex-end;
+    background:var(--accent-100);
+    border-radius:5px;
+    overflow:hidden;
+  }
+  .trend-bar-fill{
+    width:100%;
+    background:linear-gradient(180deg, var(--gold-500), var(--gold-700));
+    border-radius:5px 5px 0 0;
+    min-height:3px;
+  }
+  .trend-value{
+    font-size:12px;
+    font-weight:700;
+    color:var(--gold-900);
+    margin-top:6px;
+  }
+  .trend-label{
+    font-size:10px;
+    color:var(--ink-soft);
+    margin-top:2px;
+  }
+  .trend-delta{
+    text-align:center;
+    font-size:12.5px;
+    font-weight:600;
+    padding:6px 0 4px;
+  }
+  .trend-up{ color:var(--good); }
+  .trend-down{ color:var(--error); }
+  .trend-flat{ color:var(--ink-soft); }
 </style>
 </head>
 <body>
@@ -444,6 +530,45 @@
       });
   });
 
+  function formatWeekLabel(weekStartStr){
+    const d = new Date(weekStartStr + 'T00:00:00');
+    return d.toLocaleDateString('en-US', { month:'short', day:'numeric' });
+  }
+
+  function renderWeeklyTrend(weeklyTrend){
+    let html = `<div class="section-title">Weekly Attendance Trend</div>`;
+
+    if (!weeklyTrend || weeklyTrend.length === 0){
+      return html + `<p class="status-msg">Not enough data yet.</p>`;
+    }
+
+    const maxStudents = Math.max(...weeklyTrend.map(w => w.uniqueStudents), 1);
+
+    html += `<div class="trend-bars">`;
+    weeklyTrend.forEach(w => {
+      const heightPct = Math.round((w.uniqueStudents / maxStudents) * 100);
+      html += `<div class="trend-col">
+        <div class="trend-bar-track"><div class="trend-bar-fill" style="height:${heightPct}%"></div></div>
+        <div class="trend-value">${w.uniqueStudents}</div>
+        <div class="trend-label">${formatWeekLabel(w.weekStart)}</div>
+      </div>`;
+    });
+    html += `</div>`;
+
+    if (weeklyTrend.length >= 2){
+      const last = weeklyTrend[weeklyTrend.length - 1];
+      const prev = weeklyTrend[weeklyTrend.length - 2];
+      const diff = last.uniqueStudents - prev.uniqueStudents;
+      let deltaText, deltaClass;
+      if (diff > 0){ deltaText = `&#9650; ${diff} more student(s) than last week`; deltaClass = 'trend-up'; }
+      else if (diff < 0){ deltaText = `&#9660; ${Math.abs(diff)} fewer student(s) than last week`; deltaClass = 'trend-down'; }
+      else { deltaText = `Same as last week`; deltaClass = 'trend-flat'; }
+      html += `<div class="trend-delta ${deltaClass}">${deltaText}</div>`;
+    }
+
+    return html;
+  }
+
   function bar(pct){
     const safe = Math.max(0, Math.min(100, pct));
     return `<div class="bar-track"><div class="bar-fill" style="width:${safe}%"></div></div>`;
@@ -489,12 +614,13 @@
     } else {
       attSubjects.forEach(subj => {
         const s = data.attendanceBySubject[subj];
+        const creditedNote = s.creditedStudents > 0 ? ` &middot; ${s.creditedStudents} credited (excluded)` : '';
         html += `<div class="subject-row">
           <div class="subject-name">${subj}</div>
           ${bar(s.participationRate)}
           <div class="subject-pct">${s.participationRate}%</div>
         </div>
-        <div class="subject-sub" style="margin:-6px 0 6px 92px;">${s.uniqueStudents} of ${data.totalStudents} students &middot; ${s.totalSubmissions} total check-ins</div>`;
+        <div class="subject-sub" style="margin:-6px 0 6px 92px;">${s.uniqueStudents} of ${s.enrolledStudents} enrolled &middot; ${s.totalSubmissions} total check-ins${creditedNote}</div>`;
       });
     }
 
@@ -503,16 +629,32 @@
     if (actSubjects.length === 0){
       html += `<p class="status-msg">No dated activities set up yet.</p>`;
     } else {
-      actSubjects.forEach(subj => {
+      actSubjects.forEach((subj, idx) => {
         const s = data.activityBySubject[subj];
-        html += `<div class="subject-row">
+        const creditedNote = s.creditedStudents > 0 ? ` &middot; ${s.creditedStudents} credited (excluded)` : '';
+        const rowId = 'act-detail-' + idx;
+        html += `<div class="subject-row activity-toggle" data-target="${rowId}" style="cursor:pointer;">
           <div class="subject-name">${subj}</div>
           ${bar(s.completionRate)}
           <div class="subject-pct">${s.completionRate}%</div>
+          <span class="activity-chevron">&#9656;</span>
         </div>
-        <div class="subject-sub" style="margin:-6px 0 6px 92px;">${s.activitiesTracked} activity date(s) tracked</div>`;
+        <div class="subject-sub" style="margin:-6px 0 6px 92px;">${s.enrolledStudents} enrolled &middot; ${s.activitiesTracked} activity date(s)${creditedNote}</div>
+        <div class="activity-detail" id="${rowId}" style="display:none;">`;
+
+        s.byDate.forEach(d => {
+          html += `<div class="activity-date-row">
+            <span class="activity-date-label">${d.date}</span>
+            ${bar(d.completionRate)}
+            <span class="activity-date-pct">${d.doneCount}/${d.possible}</span>
+          </div>`;
+        });
+
+        html += `</div>`;
       });
     }
+
+    html += renderWeeklyTrend(data.weeklyTrend);
 
     html += `<div class="section-title">Students With Lowest Attendance</div>`;
     if (!data.lowAttendanceStudents || data.lowAttendanceStudents.length === 0){
@@ -529,6 +671,16 @@
     }
 
     content.innerHTML = html;
+
+    content.querySelectorAll('.activity-toggle').forEach(row => {
+      row.addEventListener('click', () => {
+        const target = document.getElementById(row.getAttribute('data-target'));
+        const chevron = row.querySelector('.activity-chevron');
+        const isOpen = target.style.display === 'block';
+        target.style.display = isOpen ? 'none' : 'block';
+        if (chevron) chevron.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(90deg)';
+      });
+    });
   }
 
   loadOverview();
