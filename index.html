@@ -3,22 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BSOAOUMN 2-7 Monitoring Portal</title>
+<title>BSOAOUMN 2-7 Tools</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --maroon-900:#4d0712;
+    /* Brand Theme Colors matching individual tool pages */
     --maroon-700:#7a0c1e;
-    --blue-900:#0b2b4d;
     --blue-700:#134e8f;
+    --green-700:#1a6b3f;
+    --gold-700:#8a6d1f;
+
     --paper-1:#f7f3ec;
     --paper-2:#fffdf8;
     --card:#fffdf7;
-    --line:#e3d3a0;
-    --ink:#2b1210;
-    --ink-soft:#6b5347;
+    --line:#e7e0d0;
+    --ink:#241f1a;
+    --muted:#6b6a68;
   }
   *{box-sizing:border-box;}
   html, body{ height:100%; }
@@ -26,8 +28,8 @@
     margin:0;
     font-family:'Inter', Arial, sans-serif;
     background:
-      radial-gradient(circle at 12% 8%, rgba(122,12,30,0.05), transparent 38%),
-      radial-gradient(circle at 92% 88%, rgba(19,78,143,0.07), transparent 42%),
+      radial-gradient(circle at 12% 8%, rgba(122,12,30,0.04), transparent 38%),
+      radial-gradient(circle at 92% 88%, rgba(19,78,143,0.05), transparent 42%),
       linear-gradient(160deg, var(--paper-1) 0%, var(--paper-2) 100%);
     color:var(--ink);
     min-height:100vh;
@@ -35,162 +37,163 @@
     flex-direction:column;
     align-items:center;
     justify-content:center;
-    padding:40px 16px;
+    padding:20px 16px;
     position:relative;
-    overflow-x:hidden;
   }
 
-  /* faint geometric shapes */
   body::before, body::after{
     content:"";
     position:absolute;
     border-radius:50%;
-    opacity:0.05;
+    opacity:0.04;
     pointer-events:none;
   }
-  body::before{
-    width:420px; height:420px;
-    top:-120px; left:-140px;
-    background:var(--maroon-700);
-  }
-  body::after{
-    width:360px; height:360px;
-    bottom:-100px; right:-120px;
-    background:var(--blue-700);
-  }
+  body::before{ width:420px; height:420px; top:-120px; left:-140px; background:var(--maroon-700); }
+  body::after{ width:360px; height:360px; bottom:-100px; right:-120px; background:var(--blue-700); }
 
   .wrap{
     width:100%;
-    max-width:680px;
+    max-width:720px;
     text-align:center;
     position:relative;
     z-index:1;
-    flex:1;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
   }
 
   .seal{
-    width:56px;
-    height:56px;
-    margin:0 auto 16px;
+    width:48px;
+    height:48px;
+    margin:0 auto 12px;
     border-radius:50%;
     border:2px solid var(--maroon-700);
     display:flex;
     align-items:center;
     justify-content:center;
-    font-family:'Playfair Display', serif;
-    font-weight:700;
-    font-size:16px;
+    font-family:'Plus Jakarta Sans', sans-serif;
+    font-weight:800;
+    font-size:13px;
+    letter-spacing:.01em;
     color:var(--maroon-700);
-    background:radial-gradient(circle, rgba(122,12,30,0.06), transparent 70%);
+    background:radial-gradient(circle, rgba(122,12,30,0.05), transparent 70%);
   }
 
-  .eyebrow{
-    font-size:12px;
-    font-weight:700;
-    letter-spacing:.14em;
-    text-transform:uppercase;
-    color:var(--ink-soft);
-    margin:0 0 6px;
-  }
   h1{
-    font-family:'Playfair Display', serif;
-    font-weight:700;
-    font-size:30px;
-    margin:0 0 8px;
+    font-family:'Plus Jakarta Sans', sans-serif;
+    font-weight:800;
+    font-size:26px;
+    margin:0 0 6px;
     color:var(--ink);
+    letter-spacing:-0.01em;
   }
   .welcome-sub{
-    font-size:14.5px;
-    color:var(--ink-soft);
-    margin:0 0 30px;
-    line-height:1.5;
+    font-size:13.5px;
+    color:var(--muted);
+    margin:0 0 16px;
+    line-height:1.4;
   }
   .prompt{
     font-family:'Plus Jakarta Sans', sans-serif;
-    font-size:15px;
-    font-weight:600;
+    font-size:14px;
+    font-weight:700;
     color:var(--ink);
-    margin:0 0 32px;
+    margin:0 0 18px;
   }
 
   .cards{
     display:grid;
     grid-template-columns:1fr 1fr;
-    gap:20px;
+    gap:16px;
   }
+  
   a.card{
-    display:block;
-    text-align:center;
+    display:flex;
+    flex-direction:column;
     text-decoration:none;
-    border-radius:14px;
-    padding:30px 22px;
-    color:#fff;
-    box-shadow:0 10px 26px rgba(0,0,0,0.14);
-    transition:transform .2s ease, box-shadow .2s ease, filter .2s ease;
+    color:var(--ink);
+    background:var(--card);
+    border:1px solid var(--line);
+    border-top-width:5px; /* Creates an executive color tab */
+    border-radius:12px;
+    padding:20px 18px;
+    box-shadow:0 4px 14px rgba(36,31,26,0.06);
+    transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
     cursor:pointer;
+    position:relative;
+    overflow:hidden;
   }
+
   a.card:hover{
-    transform:translateY(-8px) scale(1.03);
-    filter:brightness(1.06);
+    transform:translateY(-4px);
+    box-shadow:0 12px 28px rgba(36,31,26,0.12);
   }
   a.card:active{
-    transform:translateY(-3px) scale(1.01);
-    filter:brightness(1.02);
+    transform:translateY(-1px);
   }
-  .card.attendance{ background:linear-gradient(160deg, var(--maroon-700), var(--maroon-900)); }
-  .card.attendance:hover{ box-shadow:0 18px 35px rgba(122,12,30,0.32); }
-  .card.lookup{ background:linear-gradient(160deg, var(--blue-700), var(--blue-900)); }
-  .card.lookup:hover{ box-shadow:0 18px 35px rgba(19,78,143,0.32); }
-  .card.mark{ background:linear-gradient(160deg, #2f7d5e, #1a4d38); }
-  .card.mark:hover{ box-shadow:0 18px 35px rgba(26,77,56,0.32); }
-  .card.overview{ background:linear-gradient(160deg, #8a6d1f, #5c460f); }
-  .card.overview:hover{ box-shadow:0 18px 35px rgba(92,70,15,0.32); }
-  .card .icon{
-    font-size:40px;
-    margin-bottom:14px;
-    line-height:1;
-    display:inline-block;
+
+  /* Specific color themes per card */
+  .card.attendance { border-top-color: var(--maroon-700); }
+  .card.lookup     { border-top-color: var(--blue-700); }
+  .card.mark       { border-top-color: var(--green-700); }
+  .card.overview   { border-top-color: var(--gold-700); }
+
+  .icon-badge{
+    width:42px;
+    height:42px;
+    margin:0 auto 12px;
+    border-radius:10px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
     transition:transform .2s ease;
   }
-  a.card:hover .icon{
-    transform:scale(1.08);
-  }
+  a.card:hover .icon-badge{ transform:scale(1.08); }
+  .icon-badge svg{ width:22px; height:22px; stroke-width:2px; }
+
+  .card.attendance .icon-badge{ background:rgba(122,12,30,0.10); color:var(--maroon-700); }
+  .card.lookup .icon-badge{ background:rgba(19,78,143,0.10); color:var(--blue-700); }
+  .card.mark .icon-badge{ background:rgba(26,107,63,0.10); color:var(--green-700); }
+  .card.overview .icon-badge{ background:rgba(138,109,31,0.12); color:var(--gold-700); }
+
   .card .title{
     font-family:'Plus Jakarta Sans', sans-serif;
     font-weight:700;
-    font-size:18px;
-    margin-bottom:8px;
+    font-size:16px;
+    margin-bottom:6px;
+    color:var(--ink);
   }
   .card .desc{
-    font-size:14.5px;
-    line-height:1.5;
-    opacity:.92;
+    font-size:12.5px;
+    line-height:1.4;
+    font-weight:500;
+    color:#5a5652;
   }
-
-  .footer{
-    margin-top:36px;
-    font-size:11.5px;
-    color:var(--ink-soft);
-    line-height:1.6;
-    opacity:.85;
-    text-align:center;
-  }
-  .footer .line1{ font-weight:600; letter-spacing:.03em; }
 
   .disclaimer{
     font-size:12px;
     line-height:1.5;
-    color:var(--ink-soft);
+    color:#718096;
     text-align:center;
-    max-width:480px;
-    margin:28px auto 0;
+    max-width:580px;
+    margin:24px auto 0;
   }
 
-  @media (max-width:480px){
+  .footer{
+    margin-top:16px;
+    font-size:11px;
+    color:var(--muted);
+    line-height:1.6;
+    text-align:center;
+  }
+  .footer .line1{
+    font-weight:700;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--ink);
+    font-size:11.5px;
+  }
+
+  @media (max-width:520px){
     .cards{ grid-template-columns:1fr; }
+    body{ height:auto; padding:32px 16px; }
   }
 </style>
 </head>
@@ -199,27 +202,48 @@
 <div class="wrap">
   <div class="seal">PUP</div>
   <h1>Welcome, BSOAOUMN 2-7!</h1>
-  <p class="welcome-sub">Your one-stop portal for attendance, activities, and class records.</p>
+  <p class="welcome-sub">Use the tools below for attendance and student records.</p>
   <p class="prompt">What would you like to do today?</p>
 
   <div class="cards">
     <a class="card attendance" href="attendance.html">
-      <div class="icon">&#128220;</div>
+      <div class="icon-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
+          <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+          <path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/>
+        </svg>
+      </div>
       <div class="title">Weekly Attendance</div>
       <div class="desc">Submit your name, student number, date, and subject for the week.</div>
     </a>
+
     <a class="card lookup" href="lookup.html">
-      <div class="icon">&#128269;</div>
+      <div class="icon-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+        </svg>
+      </div>
       <div class="title">Student Lookup</div>
       <div class="desc">Search a student number to view grades, enrollment, attendance records, and activities.</div>
     </a>
+
     <a class="card mark" href="mark_activity.html">
-      <div class="icon">&#9989;</div>
+      <div class="icon-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>
+        </svg>
+      </div>
       <div class="title">Mark My Activity</div>
       <div class="desc">Confirm that you've completed an activity for a subject.</div>
     </a>
+
     <a class="card overview" href="overview.html">
-      <div class="icon">&#128202;</div>
+      <div class="icon-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/>
+        </svg>
+      </div>
       <div class="title">Class Overview</div>
       <div class="desc">A snapshot of attendance and activity completion for officers.</div>
     </a>
@@ -231,7 +255,7 @@
 <div class="footer">
   <div class="line1">BSOAOUMN 2-7 Student Portal</div>
   <div>Version 4.0</div>
-  <div>© 2026 BSOAOUMN 2-7</div>
+  <div>&copy; 2026 BSOAOUMN 2-7</div>
 </div>
 
 </body>
