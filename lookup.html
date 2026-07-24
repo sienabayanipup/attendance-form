@@ -9,11 +9,11 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&family=Plus+Jakarta+Sans:wght@600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --blue-900:#0b2b4d;
-    --blue-700:#134e8f;
-    --blue-500:#2f7dd1;
-    --accent-500:#8ecae6;
-    --accent-100:#e3f2fd;
+    --blue-900:#0c2840;
+    --blue-700:#1d507c;
+    --blue-500:#296aa3;
+    --accent-500:#ffc72c;
+    --accent-100:#fff2cc;
     --paper:#faf6ea;
     --card:#fffdf7;
     --line:#e3d3a0;
@@ -39,11 +39,10 @@
     margin:0 auto;
   }
 
-
   .page-desc{
     margin:6px 0 0;
     font-size:12.5px;
-    color:rgba(255,255,255,0.82);
+    color:rgba(255,255,255,0.85);
     font-weight:500;
   }
 
@@ -53,7 +52,7 @@
     padding:18px 28px 22px;
     border-radius:12px 12px 0 0;
     border-bottom:4px solid var(--accent-500);
-    box-shadow:0 8px 24px rgba(11,43,77,0.16);
+    box-shadow:0 8px 24px rgba(11,43,77,0.14);
   }
   .back-link{
     display:inline-flex;
@@ -61,9 +60,9 @@
     gap:5px;
     font-size:12px;
     font-weight:600;
-    color:rgba(255,255,255,0.82);
+    color:rgba(255,255,255,0.85);
     text-decoration:none;
-    margin-bottom:10px;
+    margin-bottom:12px;
     transition:color .15s ease;
   }
   .back-link:hover{ color:#fff; }
@@ -112,7 +111,7 @@
     border-top:none;
     border-radius:0 0 12px 12px;
     padding:22px 28px 26px;
-    box-shadow:0 8px 24px rgba(11,43,77,0.10);
+    box-shadow:0 8px 24px rgba(11,43,77,0.08);
     margin-bottom:24px;
   }
   .search-row{
@@ -136,18 +135,18 @@
   }
   button#searchBtn{
     padding:12px 22px;
-    background-image:linear-gradient(160deg, var(--blue-500), var(--blue-900));
+    background:linear-gradient(160deg, var(--blue-500), var(--blue-900));
     color:#fff;
     font-size:15px;
     font-weight:700;
     border:none;
     border-radius:7px;
     cursor:pointer;
-    transition:transform .12s ease, box-shadow .12s ease;
-    box-shadow:0 6px 16px rgba(11,43,77,0.3);
+    transition:transform .12s ease, box-shadow .12s ease, opacity .12s ease;
+    box-shadow:0 6px 16px rgba(11,43,77,0.25);
   }
   button#searchBtn:hover:not(:disabled){ transform:translateY(-1px); }
-  button#searchBtn:disabled{ opacity:.6; cursor:not-allowed; }
+  button#searchBtn:disabled{ opacity:.65; cursor:not-allowed; }
   .hint{
     font-size:12px;
     color:var(--ink-soft);
@@ -177,8 +176,29 @@
     border-radius:8px;
     padding:14px 20px;
     margin-bottom:16px;
-    box-shadow:0 4px 14px rgba(11,43,77,0.08);
+    box-shadow:0 4px 14px rgba(11,43,77,0.06);
   }
+  .student-header-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    flex-wrap:wrap;
+  }
+  .export-btn{
+    flex:0 0 auto;
+    font-size:12.5px;
+    font-weight:700;
+    color:var(--blue-700);
+    background:var(--accent-100);
+    border:1px solid var(--blue-500);
+    border-radius:20px;
+    padding:7px 14px;
+    cursor:pointer;
+    white-space:nowrap;
+    transition:background .15s ease;
+  }
+  .export-btn:hover{ background:var(--accent-500); }
   .student-header .name{
     font-family:'Plus Jakarta Sans', sans-serif;
     font-weight:700;
@@ -202,7 +222,7 @@
     border:1px solid var(--line);
     border-radius:10px;
     overflow:hidden;
-    box-shadow:0 4px 14px rgba(11,43,77,0.08);
+    box-shadow:0 4px 14px rgba(11,43,77,0.06);
   }
   .record-card .rc-header{
     background:var(--accent-100);
@@ -329,10 +349,20 @@
     border-color:#f0cfcb;
     color:var(--error);
   }
+
+  @media print{
+    body{ background:#fff; padding:0; }
+    .letterhead, .search-card, .disclaimer, .export-btn{ display:none !important; }
+    .student-header{ border:1.5px solid var(--blue-700); box-shadow:none; }
+    .record-card{ box-shadow:none; break-inside:avoid; }
+    .record-card.collapsed .rc-body{ display:block !important; }
+    .rc-chevron{ display:none; }
+    .rc-header{ cursor:default; }
+    * { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  }
 </style>
 </head>
 <body>
-
 
 <div class="wrap">
   <div class="letterhead">
@@ -350,7 +380,7 @@
 
   <div class="search-card">
     <div class="search-row">
-      <input type="text" id="searchInput" placeholder="e.g. 202x-xxxxx-MN-0" autocomplete="off">
+      <input type="text" id="searchInput" placeholder="e.g. 2025-xxxxx-MN-0" autocomplete="off">
       <button id="searchBtn">Search</button>
     </div>
     <p class="hint">Enter a student number to pull their record from the 1st Sem Summary, Base Tracker, 2nd Sem Grades, and 1st Sem Enrollment sheets.</p>
@@ -360,8 +390,13 @@
   <p class="disclaimer">This tool is for the exclusive use of BSOAOUMN 2-7 and is intended for academic monitoring purposes only.</p>
 
   <div class="student-header" id="studentHeader">
-    <div class="name" id="studentHeaderName"></div>
-    <div class="number" id="studentHeaderNumber"></div>
+    <div class="student-header-row">
+      <div>
+        <div class="name" id="studentHeaderName"></div>
+        <div class="number" id="studentHeaderNumber"></div>
+      </div>
+      <button type="button" class="export-btn" id="exportBtn">&#128190; Export as PDF</button>
+    </div>
   </div>
 
   <div class="results" id="resultsArea"></div>
@@ -385,10 +420,13 @@
   const studentHeader = document.getElementById('studentHeader');
   const studentHeaderName = document.getElementById('studentHeaderName');
   const studentHeaderNumber = document.getElementById('studentHeaderNumber');
+  const exportBtn = document.getElementById('exportBtn');
+
+  exportBtn.addEventListener('click', () => {
+    window.print();
+  });
 
   function renderGroupedActivities(body, entries){
-    // entries look like ["ENGL 017 - 07/21/2026", "Done"] — split on " - "
-    // to group everything under its subject.
     const groups = {};
     entries.forEach(([k, v]) => {
       const idx = k.indexOf(' - ');
@@ -413,7 +451,7 @@
         const chip = document.createElement('span');
         const doneClass = String(value).trim().toLowerCase() === 'done' ? 'done' : 'not-done';
         chip.className = 'activity-chip ' + doneClass;
-        chip.textContent = (dateLabel || value) + (dateLabel ? '' : '');
+        chip.textContent = (dateLabel || value);
         chip.title = dateLabel ? (dateLabel + ': ' + value) : value;
         chipRow.appendChild(chip);
       });
@@ -423,7 +461,6 @@
   }
 
   function renderAttendanceGroups(body, entries){
-    // entries look like ["ENGL 017", "3 time(s) — 07/20/2026, 07/21/2026, 07/22/2026"]
     entries.forEach(([subject, value]) => {
       const groupWrap = document.createElement('div');
       groupWrap.className = 'activity-group';
